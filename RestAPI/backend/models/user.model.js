@@ -12,40 +12,38 @@ const userSchema = new Schema({
         minlength: 3,
         maxlength: 40
     },
-    /*email: {
-        type: String,
-        required: true,
-        max: 40,
-        unique: true,
-        
-    },
     password:{
         type:String,
         required:true,
-        min:6
+        min:3
     },
+    
+    
     profilePicture:{
         type:String,
         default:""
     },
     familyName:{
         type:String,
-        required: true
+
+        default:""
     },
     givenName:{
         type:String,
-        required: true
+
+        default:""
     },
     gender:{
         type:String,
-        required: true
-        
-    },
-    */
+
+        default:""
+    }
+    
+    
 
 }, {
     timestamps: true,
 });
 
-const User = mongoose.model('User', userSchema);
+const User = mongoose.model( 'User', userSchema);
 module.exports = User;

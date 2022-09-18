@@ -7,22 +7,24 @@ const dotenv = require('dotenv');
 dotenv.config();
 
 const app = express();
-const port = process.env.PORT || 5001;
+const port = process.env.PORT || 5003;
 
 app.use(cors());
 app.use(express.json());
 
 const uri = process.env.URI;
 
+
 mongoose.connect(uri);
 
 const connection = mongoose.connection;
 connection.once('open',() => {console.log("Mongodb database connection established successfully")});
 
-const exercisesRouter = require('./routes/exercises');
+const recipesRouter = require('./routes/recipes');
 const usersRouter = require('./routes/users');
 
-app.use('/exercises', exercisesRouter);
+
+app.use('/recipes', recipesRouter);
 app.use('/users', usersRouter);
 
 app.listen(port, () => {
