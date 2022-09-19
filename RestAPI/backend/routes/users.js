@@ -1,6 +1,8 @@
 const router = require('express').Router();
+const bcrypt  = require('bcryptjs');
+const jwt = require('jsonwebtoken')
 let User = require('../models/user.model');
-
+JWT_SECRET = 'asdasdasdasdsdf+659+523ewrfgarf6r5faw+f+-**/-/-*/*5*/3-*5/3-*5/266345^&*(^%&UJHUH' //use atob
 router.route('/').get((req, res) => {
  User.find()
         .then(users => res.json(users))
@@ -15,10 +17,10 @@ router.route('/:id').get((req, res) => {
 });
 
 //signup
-router.route('/signup').post((req, res) => {
+router.route('/signup').post(async (req, res) => {
     //create new User
     const email = req.body.email;
-    const password = req.body.password;
+    const password = await bcrypt.hash(req.body.password, 10);
     const newUser = User({email, password});
 //save User
     newUser.save()
@@ -31,17 +33,19 @@ router.post("/login", async (req, res) => {
     try {
         var validpassword = 1;
         var validemail = 1;
-        const user = await User.findOne({ email: req.body.email});
+        const {email,password} = req.body;
+        const user = await User.findOne({ email: req.body.email});a
         if(!user){
             var validemail = 0;
             res.status(404).json( "User not found");
         }
-        if (req.body.password != user.password){
+        if (! await bcrypt.compare(password, user.password)){
             var validpassword = 0;
             res.status(400).json("password incorrect");
         }
         if (validemail && validpassword){
-            res.status(200).json("login successful!!!");
+            const token = jwt.sign({id: user._id,email:user.email},JWT_SECRET);
+            res.status(200).json({statis:"login successful!!!",data: token});
         }
     } catch (err){
         console.log(err);
