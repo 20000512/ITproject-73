@@ -1,8 +1,9 @@
 const router = require('express').Router();
 const bcrypt  = require('bcryptjs');
 const jwt = require('jsonwebtoken')
+const checkAuth = require('../middleware/check_auth');
 let User = require('../models/user.model');
-JWT_SECRET = 'asdasdasdasdsdf+659+523ewrfgarf6r5faw+f+-**/-/-*/*5*/3-*5/3-*5/266345^&*(^%&UJHUH' //use atob
+JWT_SECRET = 'asdasdasdasdsdf+659+523ewrfgarf6r5faw+f+-**/-/-*/*5*/3-*5/3-*5/266345^&*(^%&UJHUH';
 router.route('/').get((req, res) => {
  User.find()
         .then(users => res.json(users))
@@ -34,7 +35,7 @@ router.post("/login", async (req, res) => {
         var validpassword = 1;
         var validemail = 1;
         const {email,password} = req.body;
-        const user = await User.findOne({ email: req.body.email});a
+        const user = await User.findOne({ email: req.body.email});
         if(!user){
             var validemail = 0;
             res.status(404).json( "User not found");
@@ -54,10 +55,10 @@ router.post("/login", async (req, res) => {
 })
 
 //update user by id
-router.route('/update/:id').put((req, res) => {
-    User.findById(req.params.id)
+router.route('/update').put(checkAuth,(req, res) => {
+    User.findById(req.userData.id)
         .then(user => {
-            user.username = req.body.username;
+            user.email = req.body.email;
             user.description = req.body.description;
             user.duration = Number(req.body.duration);
             user.date = Date.parse(req.body.date);
@@ -72,10 +73,11 @@ router.route('/update/:id').put((req, res) => {
         
 });
 //delete user by id
-router.route('/:id').delete((req, res) => {
-    User.findByIdAndDelete(req.params.id)
+router.route('/').delete(checkAuth,(req, res) => {
+    User.findByIdAndDelete(req.userData.id)
         .then(() => res.json('User deleted.'))
         .catch(err => res.status(400).json('Error: ' + err));
+    console.log(req.userData.id);
 });
 
 module.exports = router;
