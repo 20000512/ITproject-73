@@ -87,7 +87,7 @@ const Login = () => {
             </Box>
             <Box sx={{ display: 'flex', justifyContent: 'end', }}>
               <Typography onClick={() => navigate('/forget')} sx={{ textDecoration: 'underline', cursor: 'pointer' }} variant="body" color="#787878">
-                forget password
+                Forget password
               </Typography>
             </Box>
             <Button onClick={() => handleClick()} sx={{ marginTop: '30px', background: '#ffa65c', color: 'white' }} variant="outlined" color="warning">

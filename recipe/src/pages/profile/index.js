@@ -2,16 +2,13 @@ import oneImg from "../../assets/1.jpg";
 import avatarImg from "../../assets/avatar.jpg";
 import {
   Box,
-  Button,
-  TextField,
   Typography,
-  InputAdornment,
 } from "@mui/material";
 import PageWrapper from "../../components/pagewrapper";
 import NavBarWrapper from "../../components/navbarwrapper";
 import Navpagewrapper from "../../components/navpagewrapper";
 import ItemCard from "../../components/itemcard";
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import SettingsOutlinedIcon from "@mui/icons-material/SettingsOutlined";
 import FavoriteBorderIcon from "@mui/icons-material/FavoriteBorder";
@@ -57,6 +54,18 @@ const Profile = () => {
   ]);
   const [tab, setTab] = useState(1);
 
+  const handleDraft = (e, index) => {
+    localStorage.setItem('draftIndex', index);
+    navigate('/edit?type=edit')
+  }
+
+  useEffect(() => {
+    const data = JSON.parse(localStorage.getItem('draft'));
+    if (data && data.length) {
+      setDraft(data);
+    }
+  }, []);
+
   const renderItem = () => {
     switch (tab) {
       case 1:
@@ -77,9 +86,9 @@ const Profile = () => {
           color: tab === 1 ? "black" : "#787878",
         }}><RuleFolderOutlinedIcon />There are no posted here .</Typography>;
       case 2:
-        return draft.length ? draft.map((e) => (
+        return draft.length ? draft.map((e, index) => (
           <ItemCard
-            onClick={() => navigate("/detail/" + e.id)}
+            onClick={() => handleDraft(e, index)}
             sx={{ mb: "30px" }}
             key={e.id}
             title={e.title}

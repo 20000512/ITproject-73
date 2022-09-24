@@ -27,7 +27,7 @@ const Forget = () => {
         {send ? <Box>
           <Typography variant='h3'>√ Check your email</Typography>
           <Typography sx={{ marginTop: '30px', textAlign: 'center' }}>
-            We have already sent a password recover instructions to your email.
+           We have already sent a password recover instructions to your email.
           </Typography>
           <Typography sx={{ marginTop: '20px', textAlign: 'center' }}>
             Please check it later.
@@ -36,7 +36,7 @@ const Forget = () => {
         <Box sx={{ display: 'flex', justifyContent: 'center', flexDirection: 'column', alignItems: 'center', maxWidth: '600px' }}>
           <Typography variant='h3'>Forget Your Password ?</Typography>
           <Typography variant='body' sx={{ marginTop: '30px', textAlign: 'center' }}>
-            Enter the emoil associoted with your account and well send an email with instructions to reset your password.
+            Enter the email associoted with your account and well send an email with instructions to reset your password.
           </Typography>
 
           <form noValidate autoComplete="off" onSubmit={handleClick}>
