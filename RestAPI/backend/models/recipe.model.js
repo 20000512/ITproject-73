@@ -17,5 +17,5 @@ const recipeSchema = new Schema({
     timestamps: true,
 });
 
-const Recipe = mongoose.model('Exercise', recipeSchema);
+const Recipe = mongoose.model('recipes', recipeSchema);
 module.exports = Recipe;
