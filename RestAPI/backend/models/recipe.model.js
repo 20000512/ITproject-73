@@ -12,6 +12,7 @@ const recipeSchema = new Schema({
     title: {type: String, required: true},
     description:{type: String, max:1000},
     recipeText:{type: String},
+    //change to enum? https://stackoverflow.com/questions/29299477/how-to-create-and-use-enum-in-mongoose
     state:{type: String, required: true},
 }, {
     timestamps: true,

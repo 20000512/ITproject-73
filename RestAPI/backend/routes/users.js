@@ -1,9 +1,14 @@
 const router = require('express').Router();
 const bcrypt  = require('bcryptjs');
 const jwt = require('jsonwebtoken')
+//check authentication through JWT
 const checkAuth = require('../middleware/check_auth');
+//check format of object ID
+const checkObjID = require('../middleware/check_obj_id');
 let User = require('../models/user.model');
 JWT_SECRET = 'asdasdasdasdsdf+659+523ewrfgarf6r5faw+f+-**/-/-*/*5*/3-*5/3-*5/266345^&*(^%&UJHUH';
+
+//get all users
 router.route('/').get((req, res) => {
  User.find()
         .then(users => res.json(users))
@@ -22,40 +27,43 @@ router.route('/signup').post(async (req, res) => {
     //create new User
     const email = req.body.email;
     const password = await bcrypt.hash(req.body.password, 10);
-    const newUser = User({email, password});
-//save User
+
+    //check if user already exists
+    const oldUser = User.find({email: email});
+    if (oldUser) {
+        res.status(400).json("User already exists")
+    }
+
+    //save User
+    const newUser = new User({email, password});
     newUser.save()
-        .then(() => res.json('Signed up successful!'))
-        .catch(err => res.status(400).json('Error: ' + err));
+        .then(() => res.status(201).json('Sign up successful'))
+        .catch(err => res.status(500).json('Error: ' + err));
 });
 
 //login
 router.post("/login", async (req, res) => {
     try {
-        var validpassword = 1;
-        var validemail = 1;
         const {email,password} = req.body;
-        const user = await User.findOne({ email: req.body.email});
-        if(!user){
-            var validemail = 0;
-            res.status(404).json( "User not found");
+        const user = await User.findOne({email: email});
+
+        if(!user || !await bcrypt.compare(password, user.password)){
+            //login failed
+            res.status(401).json('Incorrect email or password');
         }
-        if (! await bcrypt.compare(password, user.password)){
-            var validpassword = 0;
-            res.status(400).json("password incorrect");
-        }
-        if (validemail && validpassword){
-            const token = jwt.sign({id: user._id,email:user.email},JWT_SECRET);
-            res.status(200).json({statis:"login successful!!!",data: token});
+        else {
+            //login successful, create JWT token
+            const token = jwt.sign({id: user._id, email: user.email},JWT_SECRET);
+            res.status(200).json({message: 'Login successful', token: token});
         }
     } catch (err){
-        console.log(err);
+        //unknown error
+        res.status(500).json('Error: ' + err);
     }
-
 })
 
 //update user by id
-router.route('/update').put(checkAuth,(req, res) => {
+router.route('/update').put(checkAuth, (req, res) => {
     User.findById(req.userData.id)
         .then(user => {
             user.email = req.body.email;
@@ -72,11 +80,13 @@ router.route('/update').put(checkAuth,(req, res) => {
         .catch(err => res.status(400).json('Error: ' + err));
         
 });
+
 //delete user by id
 router.route('/').delete(checkAuth,(req, res) => {
     User.findByIdAndDelete(req.userData.id)
-        .then(() => res.json('User deleted.'))
-        .catch(err => res.status(400).json('Error: ' + err));
+        .then(() => res.status(200).json('User deleted'))
+        .catch(err => res.status(500).json('Error: ' + err));
+    
     console.log(req.userData.id);
 });
 
