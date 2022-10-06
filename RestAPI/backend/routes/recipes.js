@@ -4,8 +4,27 @@ const checkAuth = require('../middleware/check_auth');
 //check format of object ID
 const checkObjID = require('../middleware/check_obj_id');
 let Recipe = require('../models/recipe.model');
-
-
+const multer = require('multer');
+//uploads
+const storage = multer.diskStorage({
+    //destination for files
+    destination: function (request, file, callback) {
+      callback(null, './uploads/images');
+    },
+  
+    //add back the extension
+    filename: function (request, file, callback) {
+      callback(null, Date.now() + file.originalname);
+    },
+  });
+//upload parameters for multer
+  const upload = multer({
+    storage: storage,
+    limits: {
+      fieldSize: 1024 * 1024 * 3,
+    },
+  });
+  
 //get all recipes
 router.route('/').get((req, res) => {
     Recipe.find()
@@ -15,19 +34,17 @@ router.route('/').get((req, res) => {
 
 
 //create a new recipe
-router.route('/add').post(checkAuth, (req, res) => {
-    //const userId = req.body.userId;
-    //const title = req.body.title;
-    //const state = req.body.state;
-
+router.route('/add').post(checkAuth,upload.single('image') ,(req, res) => {
+    const tittle = req.body.tittle;
+    const description = req.body.description;
+    const image = req.body.image;
 
     //include userID to attribute recipe author
     const newBody = {
-        userId: req.userData.id,
-        ...req.body
+        tittle: req.userData.id
     }
-
-    const newRecipe = new Recipe(newBody)
+    const userId = req.userData.id;
+    const newRecipe = new Recipe(tittle,description,image)
     
     newRecipe.save()
         .then(() => res.status(201).json('Recipe added'))

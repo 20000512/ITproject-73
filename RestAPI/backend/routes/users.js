@@ -30,9 +30,7 @@ router.route('/signup').post(async (req, res) => {
 
     //check if user already exists
     const oldUser = User.find({email: email});
-    if (oldUser) {
-        res.status(400).json("User already exists")
-    }
+
 
     //save User
     const newUser = new User({email, password});
