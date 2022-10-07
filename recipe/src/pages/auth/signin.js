@@ -45,7 +45,7 @@ const Signin = () => {
             }}>
               <AccountCircleOutlinedIcon sx={{ fontSize: '60px' }} />
               <Typography variant="h4" color="inherit">
-                {"Sign in"}
+                {"Sign up"}
               </Typography>
             </Box>
             <Box sx={{
@@ -138,7 +138,7 @@ const Signin = () => {
               </Typography>
             </Box>
             <Button onClick={() => handleClick()} sx={{ marginTop: '30px', background: '#ffa65c', color: 'white' }} variant="outlined" color="warning">
-              {"Sign in"}
+              {"Sign up"}
             </Button>
           </Box>
         </form>

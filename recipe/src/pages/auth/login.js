@@ -101,7 +101,7 @@ const Login = () => {
             --------------OR--------------
           </Typography>
         </Box>
-        <Button onClick={() => navigate('/signin')}  sx={{ display: 'flex', justifyContent: 'center', background: '#ffc99c', color: '#787878' }}>Sign in</Button>
+        <Button onClick={() => navigate('/signin')}  sx={{ display: 'flex', justifyContent: 'center', background: '#ffc99c', color: '#787878' }}>Sign up</Button>
       </Box>
     </PageWrapper>
   );
