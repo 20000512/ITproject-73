@@ -27,13 +27,15 @@ router.route('/signup').post(async (req, res) => {
     //create new User
     const email = req.body.email;
     const password = await bcrypt.hash(req.body.password, 10);
-
+    const username = req.body.username;
     //check if user already exists
     const oldUser = User.find({email: email});
-
+    if((await oldUser).length >= 1){
+        res.status(400).json('user already exists');
+    }
 
     //save User
-    const newUser = new User({email, password});
+    const newUser = new User({email, password, username});
     newUser.save()
         .then(() => res.status(201).json('Sign up successful'))
         .catch(err => res.status(500).json('Error: ' + err));
@@ -90,3 +92,4 @@ router.route('/').delete(checkAuth,(req, res) => {
 });
 
 module.exports = router;
+

@@ -17,30 +17,15 @@ const userSchema = new Schema({
         required:true,
         min:3
     },
-    
+    username: {
+        type: String,
+        required:true
+    },
     
     profilePicture:{
         type:String,
         default:""
-    },
-    familyName:{
-        type:String,
-
-        default:""
-    },
-    givenName:{
-        type:String,
-
-        default:""
-    },
-    gender:{
-        type:String,
-
-        default:""
     }
-    
-    
-
 }, {
     timestamps: true,
 });
