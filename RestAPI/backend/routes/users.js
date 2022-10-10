@@ -65,9 +65,10 @@ router.route('/update').put(checkAuth, (req, res) => {
     User.findById(req.userData.id)
         .then(user => {
             user.email = req.body.email;
-            user.description = req.body.description;
-            user.duration = Number(req.body.duration);
-            user.date = Date.parse(req.body.date);
+            user.familyName = req.body.familyName;
+            user.givenName = req.body.givenName;
+            user.gender = req.body.gender;
+            user.profilePicture = req.body.profilePicture;
 
             user.save()
             .then(() => res.json('user updated.'))
