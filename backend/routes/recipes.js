@@ -125,6 +125,20 @@ router.route('/like/:id').put(checkAuth, checkObjID, async (req, res) => {
     }
 })
 
+//search by typing keywords
+router.route('/search/:keyword').get( async (req, res) => {
+    let result = await Recipe.find(
+        {
+            "$or":[
+                {title:{$regex:req.params.keyword}},
+                {description:{$regex:req.params.keyword}},
+                {recipeText:{$regex:req.params.keyword}}
+            ]
+        }
+
+    )
+    res.status(200).json(result)
+})
 //get timeline recipes
 //router.get("/timeline")
 
