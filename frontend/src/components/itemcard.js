@@ -5,10 +5,10 @@ import Typography from '@mui/material/Typography';
 
 const ItemCard = (props) => {
   return (
-    <Card sx={{ width: '50%' }} {...props}>
+    <Card sx={{ width: '100%' }} {...props}>
       <CardMedia
         component="img"
-        height="200"
+        height="260"
         image={props.cover}
         alt=""
       />

@@ -11,6 +11,8 @@ import SearchOutlinedIcon from '@mui/icons-material/SearchOutlined';
 import DashboardOutlinedIcon from '@mui/icons-material/DashboardOutlined';
 import Person2OutlinedIcon from '@mui/icons-material/Person2Outlined';
 import { useNavigate, useLocation } from 'react-router-dom';
+import { Typography, IconButton } from '@mui/material';
+import AddIcon from '@mui/icons-material/Add';
 
 function App() {
   const [value, setValue] = useState(0);
@@ -43,11 +45,15 @@ function App() {
             setValue(newValue);
             navigate(routeList[newValue]);
           }}
+          sx={{ position: 'relative' }}
         >
           <BottomNavigationAction label="Home" icon={<HomeOutlinedIcon />} />
           <BottomNavigationAction label="Search" icon={<SearchOutlinedIcon />} />
           <BottomNavigationAction label="Sort" icon={<DashboardOutlinedIcon />} />
           <BottomNavigationAction label="Profile" icon={<Person2OutlinedIcon />} />
+          <IconButton onClick={() => navigate('/edit?type=new')} sx={{ position: 'absolute', top: '-15px', left: 'calc(50% - 10px)', width: '40px', height: '40px', background: '#ffc967', borderRadius: '50%', '&:hover': { background: '#fabd51' } }} aria-label="delete" size="large">
+            <AddIcon fontSize="inherit" />
+          </IconButton>
         </BottomNavigation>
       </Paper>
     </Box>

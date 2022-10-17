@@ -20,6 +20,7 @@ import Detail from './pages/detail';
 import Setting from './pages/profile/setting';
 import ChangePassword from './pages/profile/changepassword';
 import Personal from './pages/profile/personal';
+import Edit from './pages/edit';
 
 const root = ReactDOM.createRoot(document.getElementById('root'));
 root.render(
@@ -32,6 +33,7 @@ root.render(
           <Route path="/sort" element={<Sort />} />
           <Route path="/profile" element={<Profile />} />
         </Route>
+        <Route path="edit" element={<Edit />} />
         <Route path="personal" element={<Personal />} />
         <Route path="changepassword" element={<ChangePassword />} />
         <Route path="setting" element={<Setting />} />
