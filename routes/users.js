@@ -85,7 +85,7 @@ router.route('/update').put(checkAuth, (req, res) => {
 
 
 //delete user by id,his recipes and likes
-router.route('/updatedele').put(checkAuth, async (req, res) => {
+router.route('/delete').put(checkAuth, async (req, res) => {
     try{
     
         
