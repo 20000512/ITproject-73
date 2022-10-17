@@ -6,6 +6,7 @@ const checkAuth = require('../middleware/check_auth');
 //check format of object ID
 const checkObjID = require('../middleware/check_obj_id');
 let User = require('../models/user.model');
+let Recipe = require('../models/recipe.model');
 JWT_SECRET = 'asdasdasdasdsdf+659+523ewrfgarf6r5faw+f+-**/-/-*/*5*/3-*5/3-*5/266345^&*(^%&UJHUH';
 
 //get all users
@@ -82,14 +83,26 @@ router.route('/update').put(checkAuth, (req, res) => {
         
 });
 
-//delete user by id
-router.route('/').delete(checkAuth,(req, res) => {
-    User.findByIdAndDelete(req.userData.id)
-        .then(() => res.status(200).json('User deleted'))
-        .catch(err => res.status(500).json('Error: ' + err));
+
+//delete user by id,his recipes and likes
+router.route('/updatedele').put(checkAuth, async (req, res) => {
+    try{
     
-    console.log(req.userData.id);
+        
+        await Recipe.deleteMany({userId: req.userData.id});
+        await Recipe.updateMany(
+            
+            {$pull: { likes: req.userData.id}}
+        )              
+        User.findByIdAndDelete(req.userData.id)
+        .then(() => res.json('User deleted.'))
+        .catch(err => res.status(400).json('Error: ' + err));
+        
+    }catch(err){ 
+        res.status(400).json('Error: ' + err);
+    }
 });
+
 
 module.exports = router;
 
