@@ -114,6 +114,7 @@ const Edit = () => {
     localStorage.getItem('draft'.cover)
     navigate('/profile');
   }
+  
   const handleClick = () => {
     const recipe = {
       title:title,
