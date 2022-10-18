@@ -25,7 +25,7 @@ const Login = () => {
         localStorage.setItem('token', JSON.stringify(res.data.token))
         })
       .catch((error) => { console.error(error) });//login or password worng
-      navigate('/login');
+      navigate('/');
   };
   return (
     <PageWrapper>
