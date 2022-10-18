@@ -6,7 +6,7 @@ import AccountCircleOutlinedIcon from '@mui/icons-material/AccountCircleOutlined
 import { useNavigate } from 'react-router-dom';
 import PageWrapper from '../../components/pagewrapper';
 import toast from 'react-hot-toast';
-
+import axios from 'axios';
 const Login = () => {
   const navigate = useNavigate();
   const [username, setUsername] = useState('');
@@ -15,8 +15,17 @@ const Login = () => {
   const handleClick = () => {
     if (!username) return toast.error('Email cannot be blank');
     if (!password) return toast.error('Password cannot be blank');
-    localStorage.setItem('username', username);
-    navigate('/');
+    const user = {
+      email : username,
+      password : password
+    }
+    axios.post('http://localhost:5003/users/login',user)
+      .then(res => {
+        console.log(res.data)
+        localStorage.setItem('username', JSON.stringify(res.data.token))
+        navigate('/')
+        })
+      .catch((error) => { console.error(error) });//login or password worng
   };
   
   return (
