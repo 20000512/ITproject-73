@@ -127,17 +127,36 @@ router.route('/like/:id').put(checkAuth, checkObjID, async (req, res) => {
 
 //search by typing keywords
 router.route('/search/:keyword').get( async (req, res) => {
-    let result = await Recipe.find(
-        {
+    const { page = 1, limit = 10 } = req.query;
+    
+    try {
+        // Set filter
+        const filter = {
             "$or":[
                 {title:{$regex:req.params.keyword}},
                 {description:{$regex:req.params.keyword}},
                 {recipeText:{$regex:req.params.keyword}}
             ]
-        }
+        };
 
-    )
-    res.status(200).json(result)
+        // Get filtered query results with page and limit specified
+        const query = await Recipe.find(filter)
+            .limit(limit * 1)
+            .skip((page - 1) * limit);
+
+        // Get total number of pages
+        const docCount = await Recipe.countDocuments(filter);
+        const totalPage = Math.ceil(docCount / limit);
+            
+        res.status(200).json({
+            data: query,
+            currentPage: page,
+            totalPage: totalPage
+        });
+    } catch (err) {
+        //unknown error
+        res.status(500).json('Error: ' + err);
+    }
 })
 //get timeline recipes
 //router.get("/timeline")
