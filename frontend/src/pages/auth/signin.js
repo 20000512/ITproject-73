@@ -26,8 +26,8 @@ const Signin = () => {
       email : email,
       password : password
     }
-    axios.post('http://localhost:5003/users/signup',user)
-    .then(res => console.log(res.data));
+    axios.post('/users/signup',user)
+      .then(res => console.log(res.data));
     navigate('/login');
   };
   return (
