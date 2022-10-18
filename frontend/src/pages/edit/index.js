@@ -110,6 +110,7 @@ const Edit = () => {
         content
       }]));
     }
+    localStorage.getItem('draft'.cover)
     navigate('/profile');
   }
 
