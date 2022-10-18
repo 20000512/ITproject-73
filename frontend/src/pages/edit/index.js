@@ -17,6 +17,7 @@ import "react-quill/dist/quill.snow.css";
 import "react-quill/dist/quill.bubble.css";
 import React from "react";
 import ImageUpload from "../../components/ImageUpload";
+import axios from 'axios';
 
 const galleryImageList = [
   "https://raw.githubusercontent.com/dxyang/StyleTransfer/master/style_imgs/mosaic.jpg",
@@ -113,7 +114,23 @@ const Edit = () => {
     localStorage.getItem('draft'.cover)
     navigate('/profile');
   }
-
+  const handleClick = () => {
+    const recipe = {
+      title:title,
+      description:description,
+      cover:cover,
+      content:content
+      }
+    axios.post('http://localhost:5003/recipes/add',recipe,{
+      headers: {
+        'authorization': 'Bearer ' + localStorage.getItem("username") //the token is a variable which holds the token
+      }})
+    .then(res => {
+      console.log(res.data)
+      navigate('/')
+      })
+    .catch((error) => { console.error(error) });//login or password worng
+  };
   const handleEdit = (content, delta, source, editor) => {
     setContent(editor.getHTML())
   }
@@ -215,7 +232,7 @@ const Edit = () => {
         >
           <BottomNavigation showLabels>
             <BottomNavigationAction
-              onClick={() => navigate('/home')}
+              onClick={handleClick}
               label="Publish"
               icon={<SaveIcon />}
             />

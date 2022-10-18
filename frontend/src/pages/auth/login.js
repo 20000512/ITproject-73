@@ -19,6 +19,7 @@ const Login = () => {
       email : username,
       password : password
     }
+    console.log(user);
     axios.post('http://localhost:5003/users/login',user)
       .then(res => {
         console.log(res.data)

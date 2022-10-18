@@ -37,14 +37,16 @@ router.route('/').get((req, res) => {
 router.route('/add').post(checkAuth,upload.single('image') ,(req, res) => {
     const title = req.body.title;
     const description = req.body.description;
-    const image = req.body.image;
+    const image = req.body.cover;
+    const content = req.body.contect;
 
     //include userID to attribute recipe author
     const newBody = {
         title: req.userData.id
     }
     const userId = req.userData.id;
-    const newRecipe = new Recipe({title,description,image})
+    console.log(req.body);
+    const newRecipe = new Recipe({title,description,userId})
     
     newRecipe.save()
         .then(() => res.status(201).json('Recipe added'))
