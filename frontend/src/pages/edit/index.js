@@ -15,6 +15,18 @@ import { useNavigate, useSearchParams } from "react-router-dom";
 import ReactQuill from "react-quill";
 import "react-quill/dist/quill.snow.css";
 import "react-quill/dist/quill.bubble.css";
+import React from "react";
+import ImageUpload from "../../components/ImageUpload";
+
+const galleryImageList = [
+  "https://raw.githubusercontent.com/dxyang/StyleTransfer/master/style_imgs/mosaic.jpg",
+  "https://upload.wikimedia.org/wikipedia/commons/thumb/e/ea/Van_Gogh_-_Starry_Night_-_Google_Art_Project.jpg/1280px-Van_Gogh_-_Starry_Night_-_Google_Art_Project.jpg",
+  "https://raw.githubusercontent.com/ShafeenTejani/fast-style-transfer/master/examples/dora-maar-picasso.jpg",
+  "https://pbs.twimg.com/profile_images/925531519858257920/IyYLHp-u_400x400.jpg",
+  "https://raw.githubusercontent.com/ShafeenTejani/fast-style-transfer/master/examples/dog.jpg",
+  "http://r.ddmcdn.com/s_f/o_1/cx_462/cy_245/cw_1349/ch_1349/w_720/APL/uploads/2015/06/caturday-shutterstock_149320799.jpg"
+];
+
 
 const modules = {
   toolbar: [
@@ -118,6 +130,7 @@ const Edit = () => {
     }
   }, []);
 
+
   return (
     <PageWrapper>
       <NavBarWrapper>
@@ -158,19 +171,13 @@ const Edit = () => {
                   variant="outlined"
                 />
               </Box>
-              <Box sx={{
-                display: 'flex', justifyContent: 'center', marginTop: '20px'
-              }}>
-                <TextField
-                  sx={{ width: '100%' }}
-                  id="outlined-name"
-                  label="Cover url"
-                  value={cover}
-                  onChange={(e) => setCover(e.target.value)}
-                  margin="normal"
-                  variant="outlined"
-                />
+              
+              <Box>
+              <ImageUpload cardName="Input Image" imageGallery={galleryImageList} />
               </Box>
+    
+
+
               <Box sx={{
                 display: 'flex', justifyContent: 'center', marginTop: '20px'
               }}>
@@ -186,16 +193,16 @@ const Edit = () => {
               </Box>
 
               <Box sx={{
-                marginTop: '20px'
+                display: 'flex', justifyContent: 'center', marginTop: '20px'
               }}>
-                <div>Content:</div>
-                <ReactQuill
-                  style={{ width: '100%', marginTop: '10px' }}
-                  theme="snow"
-                  modules={modules}
-                  formats={formats}
-                  onChange={handleEdit}
-                  value={content || ""}
+                <TextField
+                  sx={{ width: '100%' }}
+                  label="Content"
+                  multiline
+                  rows={15}
+                  variant="filled"
+                  value={description}
+                  onChange={(e) => setDescription(e.target.value)}
                 />
               </Box>
             </Box>
@@ -222,5 +229,6 @@ const Edit = () => {
     </PageWrapper>
   );
 };
+
 
 export default Edit;
