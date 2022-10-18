@@ -87,19 +87,16 @@ router.route('/update').put(checkAuth, (req, res) => {
 //delete user by id,his recipes and likes
 router.route('/delete').put(checkAuth, async (req, res) => {
     try{
-    
-        
         await Recipe.deleteMany({userId: req.userData.id});
-        await Recipe.updateMany(
-            
+        await Recipe.updateMany(   
             {$pull: { likes: req.userData.id}}
-        )              
-        User.findByIdAndDelete(req.userData.id)
-        .then(() => res.json('User deleted.'))
-        .catch(err => res.status(400).json('Error: ' + err));
+        );
+        await User.findByIdAndDelete(req.userData.id);
         
-    }catch(err){ 
-        res.status(400).json('Error: ' + err);
+        res.status(200).json('User deleted');
+    }catch(err){
+        //unknown error
+        res.status(500).json('Error: ' + err);
     }
 });
 
