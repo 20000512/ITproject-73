@@ -22,10 +22,10 @@ const Login = () => {
     axios.post('http://localhost:5003/users/login',user)
       .then(res => {
         console.log(res.data)
-        localStorage.setItem('token', JSON.stringify(res.data.token))
+        localStorage.setItem('username', JSON.stringify(res.data.token))
+        navigate('/')
         })
       .catch((error) => { console.error(error) });//login or password worng
-      navigate('/');
   };
   return (
     <PageWrapper>
