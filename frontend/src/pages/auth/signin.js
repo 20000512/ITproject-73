@@ -7,7 +7,7 @@ import PersonOutlinedIcon from '@mui/icons-material/PersonOutlined';
 import { useNavigate } from 'react-router-dom';
 import PageWrapper from '../../components/pagewrapper';
 import toast from 'react-hot-toast';
-
+import axios from 'axios';
 const Signin = () => {
   const navigate = useNavigate();
   const [username, setUsername] = useState('');
@@ -21,6 +21,13 @@ const Signin = () => {
     if (!password) return toast.error('Password cannot be blank');
     if (!repassword) return toast.error('RePassword cannot be blank');
     if(repassword !== password) return toast.error('RePassword is not the same as the password');
+    const user = {
+      username : username,
+      email : email,
+      password : password
+    }
+    axios.post('http://localhost:5003/users/signup',user)
+    .then(res => console.log(res.data));
     navigate('/login');
   };
   return (
