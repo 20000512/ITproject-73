@@ -15,7 +15,6 @@ const Login = () => {
   const handleClick = () => {
     if (!username) return toast.error('Email cannot be blank');
     if (!password) return toast.error('Password cannot be blank');
-    localStorage.setItem('username', username);
     const user = {
       email : username,
       password : password
@@ -23,10 +22,10 @@ const Login = () => {
     axios.post('http://localhost:5003/users/login',user)
       .then(res => {
         console.log(res.data)
-        localStorage.setItem('userdata', JSON.stringify(res.data))
-        navigate('/')
+        localStorage.setItem('token', JSON.stringify(res.data.token))
         })
       .catch((error) => { console.error(error) });//login or password worng
+      navigate('/login');
   };
   return (
     <PageWrapper>
