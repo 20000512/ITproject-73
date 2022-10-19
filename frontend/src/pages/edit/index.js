@@ -172,7 +172,9 @@ const Edit = () => {
                 />
               </Box>
               
-              <Box>
+              <Box sx={{
+                display: 'flex', justifyContent: 'start', marginTop: '20px'
+              }}>
               <ImageUpload cardName="Input Image" imageGallery={galleryImageList} />
               </Box>
     
@@ -193,7 +195,7 @@ const Edit = () => {
               </Box>
 
               <Box sx={{
-                display: 'flex', justifyContent: 'center', marginTop: '20px'
+                display: 'flex', justifyContent: 'center', marginTop: '20px', paddingBottom: "80px"
               }}>
                 <TextField
                   sx={{ width: '100%' }}
@@ -201,8 +203,8 @@ const Edit = () => {
                   multiline
                   rows={15}
                   variant="filled"
-                  value={description}
-                  onChange={(e) => setDescription(e.target.value)}
+                  value={content}
+                  onChange={(e) => setContent(e.target.value)}
                 />
               </Box>
             </Box>
