@@ -12,6 +12,6 @@ module.exports = (req, res, next) => {
         next();
     } catch (err) {
         // Token verification failed
-        return res.status(401).json('Fail');
+        return res.status(401).json('Auth failed');
     }
 };
