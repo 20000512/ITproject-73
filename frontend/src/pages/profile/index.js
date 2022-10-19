@@ -16,13 +16,21 @@ import PostAddOutlinedIcon from "@mui/icons-material/PostAddOutlined";
 import SaveAsOutlinedIcon from "@mui/icons-material/SaveAsOutlined";
 import RuleFolderOutlinedIcon from '@mui/icons-material/RuleFolderOutlined';
 import axios from 'axios';
-const Profile = async() => {
+const Profile = () => {
   const navigate = useNavigate();
-  const res = await axios.get('http://localhost:5003/users/post',{
-    headers: {
-      'authorization': 'Bearer ' + localStorage.getItem("username")
-    }});
-  console.log(res);
+  const [resultArray, setResultArray] = useState([]);
+
+  useEffect(() => {
+      const expensesListResp = async () => {
+        await axios.get('http://localhost:5003/users/post',{headers: {
+          'authorization': 'Bearer ' + localStorage.getItem("username") //the token is a variable which holds the token
+        }})
+        .then(
+          response => setResultArray(response.data))
+      }
+      expensesListResp();
+    }, []);
+  console.log(resultArray);
   const [data, setData] = useState([
     {
       id: 1,
