@@ -22,7 +22,7 @@ const Profile = () => {
   
   const navigate = useNavigate();
   const [resultArray, setResultArray] = useState([]);
-
+  
   useEffect(() => {
       const expensesListResp = async () => {
         await axios.get('http://localhost:5003/users/post',{headers: {

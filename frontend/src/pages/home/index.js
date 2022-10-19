@@ -4,28 +4,42 @@ import PageWrapper from '../../components/pagewrapper';
 import NavBarWrapper from '../../components/navbarwrapper';
 import Navpagewrapper from '../../components/navpagewrapper';
 import ItemCard from '../../components/itemcard';
-import { useState } from 'react';
+import axios from 'axios';
 import { useNavigate } from 'react-router-dom';
+import { useState, useEffect } from "react";
+
 
 const Home = () => {
   const navigate = useNavigate();
+  const [resultArray, setResultArray] = useState([]);
+  useEffect(() => {
+    const expensesListResp = async () => {
+      await axios.get('http://localhost:5003/users/post',{headers: {
+        'authorization': 'Bearer ' + localStorage.getItem("username") //the token is a variable which holds the token
+      }})
+      .then(
+        response => setResultArray(response.data))
+    }
+    expensesListResp();
+  }, []);
+  console.log(resultArray);
+  const arrayLength = (resultArray.data?.length)
+  console.log(arrayLength); //2
 
-  const [data, setData] = useState([{
-    id: 1,
-    cover: oneImg,
-    title: 'Food Title Food Title Food Title',
-    description: 'Food description Food description Food description Food description Food description Food description Food description Food description Food description Food description Food description Food description',
-  }, {
-    id: 2,
-    cover: oneImg,
-    title: 'Food Title Food Title Food Title',
-    description: 'Food description Food description Food description Food description Food description Food description Food description Food description Food description Food description Food description Food description',
-  }, {
-    id: 3,
-    cover: oneImg,
-    title: 'Food Title Food Title Food Title',
-    description: 'Food description Food description Food description Food description Food description Food description Food description Food description Food description Food description Food description Food description',
-  }])
+  var postData = [];
+  for (var i = 0; i < arrayLength; i++){
+    postData[i] = ({
+      id: resultArray.data?.[i]._id,
+      cover: resultArray.data?.[i].cover,
+      title: resultArray.data?.[i].title,
+      description: resultArray.data?.[i].description,
+    })
+  }
+  
+  const data = postData;
+  console.log(data);
+
+
   return (
     <PageWrapper>
       <NavBarWrapper>
