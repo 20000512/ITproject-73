@@ -133,6 +133,7 @@ router.route('/update/:id').put(checkAuth, checkObjID, async (req, res) => {
 router.route('/like/:id').put(checkAuth, checkObjID, async (req, res) => {
     try {
         const recipe = await Recipe.findById(req.params.id);
+
         if (!recipe){
             //recipe do not exist
             res.status(404).json('Recipe do not exist');
@@ -185,6 +186,27 @@ router.route('/search/:keyword').get( async (req, res) => {
             currentPage: page,
             totalPage: totalPage
         });
+    } catch (err) {
+        //unknown error
+        res.status(500).json('Error: ' + err);
+    }
+})
+
+//Get whether a user liked this recipe
+router.route('/didlike/:id').get(checkAuth, checkObjID, async (req, res) => {
+    try {
+        const recipe = await Recipe.findById(req.params.id);
+
+        if (!recipe){
+            //recipe do not exist
+            res.status(404).json('Recipe do not exist');
+        } else if (!recipe.likes.includes(req.userData.id)){
+            //user did not like this recipe, return false
+            res.status(200).json(false);
+        } else {
+            //user like this recipe, return true
+            res.status(200).json(true);
+        }
     } catch (err) {
         //unknown error
         res.status(500).json('Error: ' + err);
