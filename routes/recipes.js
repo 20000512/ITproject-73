@@ -173,8 +173,8 @@ router.route('/search/:keyword').get( async (req, res) => {
 
         // Get filtered query results with page and limit specified
         const query = await Recipe.find(filter)
-            .limit(limit * 1)
-            .skip((page - 1) * limit);
+            .skip((page - 1) * limit)
+            .limit(limit * 1);
 
         // Get total number of pages
         const docCount = await Recipe.countDocuments(filter);

@@ -30,8 +30,8 @@ router.route('/post').get(checkAuth, async (req, res) => {
         // Get recipes sorted by createdAt descending
         const query = await Recipe.find(filter)
             .sort({createdAt: -1})
-            .limit(limit * 1)
-            .skip((page - 1) * limit);
+            .skip((page - 1) * limit)
+            .limit(limit * 1);
 
         // Get total number of pages
         const docCount = await Recipe.countDocuments(filter);
@@ -63,8 +63,8 @@ router.route('/draft').get(checkAuth, async (req, res) => {
         // Get recipes sorted by createdAt descending
         const query = await Recipe.find(filter)
             .sort({createdAt: -1})
-            .limit(limit * 1)
-            .skip((page - 1) * limit);
+            .skip((page - 1) * limit)
+            .limit(limit * 1);
 
         // Get total number of pages
         const docCount = await Recipe.countDocuments(filter);
@@ -96,8 +96,8 @@ router.route('/like').get(checkAuth, async (req, res) => {
         // Get recipes sorted by createdAt descending
         const query = await Recipe.find(filter)
             .sort({createdAt: -1})
-            .limit(limit * 1)
-            .skip((page - 1) * limit);
+            .skip((page - 1) * limit)
+            .limit(limit * 1);
 
         // Get total number of pages
         const docCount = await Recipe.countDocuments(filter);
