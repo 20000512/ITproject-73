@@ -16,6 +16,105 @@ router.route('/').get((req, res) => {
         .catch(err => res.status(400).json('Error: ' + err));
 });
 
+//get posted recipes, sorted by createdAt descending
+router.route('/post').get(checkAuth, async (req, res) => {
+    const { page = 1, limit = 10 } = req.query;
+
+    try {
+        // Set filter for userId and published recipes
+        const filter = {
+            userId: req.userData.id,
+            state: "published"
+        };
+        
+        // Get recipes sorted by createdAt descending
+        const query = await Recipe.find(filter)
+            .sort({createdAt: -1})
+            .skip((page - 1) * limit)
+            .limit(limit * 1);
+
+        // Get total number of pages
+        const docCount = await Recipe.countDocuments(filter);
+        const totalPage = Math.ceil(docCount / limit);
+        
+        // Return results
+        res.status(200).json({
+            data: query,
+            currentPage: page,
+            totalPage: totalPage
+        });
+    } catch (err) {
+        //unknown error
+        res.status(500).json('Error: ' + err);
+    }
+})
+
+//get draft recipes, sorted by createdAt descending
+router.route('/draft').get(checkAuth, async (req, res) => {
+    const { page = 1, limit = 10 } = req.query;
+
+    try {
+        // Set filter for userId and draft recipes
+        const filter = {
+            userId: req.userData.id,
+            state: "draft"
+        };
+        
+        // Get recipes sorted by createdAt descending
+        const query = await Recipe.find(filter)
+            .sort({createdAt: -1})
+            .skip((page - 1) * limit)
+            .limit(limit * 1);
+
+        // Get total number of pages
+        const docCount = await Recipe.countDocuments(filter);
+        const totalPage = Math.ceil(docCount / limit);
+        
+        // Return results
+        res.status(200).json({
+            data: query,
+            currentPage: page,
+            totalPage: totalPage
+        });
+    } catch (err) {
+        //unknown error
+        res.status(500).json('Error: ' + err);
+    }
+})
+
+//get liked recipes, sorted by createdAt descending
+router.route('/like').get(checkAuth, async (req, res) => {
+    const { page = 1, limit = 10 } = req.query;
+
+    try {
+        // Set filter for userId in likes and published recipes
+        const filter = {
+            likes: req.userData.id,
+            state: "published"
+        };
+        
+        // Get recipes sorted by createdAt descending
+        const query = await Recipe.find(filter)
+            .sort({createdAt: -1})
+            .skip((page - 1) * limit)
+            .limit(limit * 1);
+
+        // Get total number of pages
+        const docCount = await Recipe.countDocuments(filter);
+        const totalPage = Math.ceil(docCount / limit);
+        
+        // Return results
+        res.status(200).json({
+            data: query,
+            currentPage: page,
+            totalPage: totalPage
+        });
+    } catch (err) {
+        //unknown error
+        res.status(500).json('Error: ' + err);
+    }
+})
+
 //get user by id
 router.route('/:id').get((req, res) => {
     User.findById(req.params.id)
@@ -29,6 +128,7 @@ router.route('/signup').post(async (req, res) => {
     const email = req.body.email;
     const password = await bcrypt.hash(req.body.password, 10);
     const username = req.body.username;
+    
     //check if user already exists
     const oldUser = User.find({email: email});
     if((await oldUser).length >= 1){
@@ -83,23 +183,22 @@ router.route('/update').put(checkAuth, (req, res) => {
         
 });
 
-
 //delete user by id,his recipes and likes
 router.route('/delete').put(checkAuth, async (req, res) => {
-    try{
-    
-        
+    try {
+        // Delete recipes authored by this user
         await Recipe.deleteMany({userId: req.userData.id});
-        await Recipe.updateMany(
-            
+        // Remove user like records
+        await Recipe.updateMany(   
             {$pull: { likes: req.userData.id}}
-        )              
-        User.findByIdAndDelete(req.userData.id)
-        .then(() => res.json('User deleted.'))
-        .catch(err => res.status(400).json('Error: ' + err));
+        );
+        // Delete user
+        await User.findByIdAndDelete(req.userData.id);
         
-    }catch(err){ 
-        res.status(400).json('Error: ' + err);
+        res.status(200).json('User deleted');
+    } catch(err) {
+        //unknown error
+        res.status(500).json('Error: ' + err);
     }
 });
 

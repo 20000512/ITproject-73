@@ -123,16 +123,21 @@ class ImageUploadCard extends React.Component {
 
   handleUploadClick = event => {
     console.log();
+    const preview = document.querySelector('img');
     var file = event.target.files[0];
+    var url ;
     const reader = new FileReader();
-    var url = reader.readAsDataURL(file);
-
+    reader.addEventListener("load", () => {
+      // convert image file to base64 string
+      url =reader.result;
+    });
+    reader.readAsDataURL(file);
     reader.onloadend = function(e) {
       this.setState({
         selectedFile: [reader.result]
       });
     }.bind(this);
-    console.log(url); // Would see a path?
+     // Would see a path?
 
     this.setState({
       mainState: "uploaded",
