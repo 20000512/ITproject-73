@@ -52,7 +52,7 @@ router.route('/hot').get(async (req, res) => {
     const { page = 1, limit = 10 } = req.query;
 
     try {
-        // Set filter based on keyword
+        // Set filter for published recipes
         const filter = {state: "published"};
         
         // Get recipes sorted by likes descending
@@ -64,7 +64,41 @@ router.route('/hot').get(async (req, res) => {
         // Get total number of pages
         const docCount = await Recipe.countDocuments(filter);
         const totalPage = Math.ceil(docCount / limit);
-            
+        
+        // Return results
+        res.status(200).json({
+            data: query,
+            currentPage: page,
+            totalPage: totalPage
+        });
+    } catch (err) {
+        //unknown error
+        res.status(500).json('Error: ' + err);
+    }
+})
+
+//get posted recipes, sorted by createdAt descending
+router.route('/post').get(checkAuth, async (req, res) => {
+    const { page = 1, limit = 10 } = req.query;
+
+    try {
+        // Set filter for userId and published recipes
+        const filter = {
+            userId: req.userData.id,
+            state: "published"
+        };
+        
+        // Get recipes sorted by createdAt descending
+        const query = await Recipe.find(filter)
+            .sort({createdAt: -1})
+            .limit(limit * 1)
+            .skip((page - 1) * limit);
+
+        // Get total number of pages
+        const docCount = await Recipe.countDocuments(filter);
+        const totalPage = Math.ceil(docCount / limit);
+        
+        // Return results
         res.status(200).json({
             data: query,
             currentPage: page,
