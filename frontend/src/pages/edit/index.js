@@ -1,4 +1,3 @@
-import oneImg from "../../assets/1.jpg";
 import avatarImg from "../../assets/avatar.jpg";
 import { Box, Typography, Modal, TextField, Stack, Button } from "@mui/material";
 import PageWrapper from "../../components/pagewrapper";
@@ -16,8 +15,9 @@ import ReactQuill from "react-quill";
 import "react-quill/dist/quill.snow.css";
 import "react-quill/dist/quill.bubble.css";
 import React from "react";
-import ImageUpload from "../../components/ImageUpload";
 import axios from 'axios';
+import AddPhotoAlternateIcon from '@mui/icons-material/AddPhotoAlternate';
+import toast from 'react-hot-toast';
 
 const galleryImageList = [
   "https://raw.githubusercontent.com/dxyang/StyleTransfer/master/style_imgs/mosaic.jpg",
@@ -81,6 +81,26 @@ const Edit = () => {
   const [title, setTitle] = useState('');
   const [description, setDescription] = useState('');
   const [content, setContent] = useState('');
+  const [avatar, setAvatar] = useState(avatarImg);
+
+  const handleChooseImg = (e) => {
+    e.preventDefault();
+    const input = document.createElement('input');
+    input.type = 'file';
+    input.accept = '.jpg, .jpeg, .png';
+    input.click();
+    input.onchange = async () => {
+      try {
+        const reader = new FileReader();
+        reader.addEventListener('load', () => {
+          setAvatar(reader.result.toString() || '')
+        });
+        reader.readAsDataURL(input.files[0]);
+      } catch (error) {
+        toast.error('Upload error');
+      }
+    };
+  }
 
   const handleSave = () => {
     const recipe = {
@@ -181,15 +201,17 @@ const Edit = () => {
               </Box>
               
               <Box sx={{
-                display: 'flex', justifyContent: 'start', marginTop: '20px'
+                display: 'flex', justifyContent: 'start', marginTop: '20px', width: '80'
               }}>
-              <ImageUpload cardName="Input Image" imageGallery={galleryImageList} />
+              <AddPhotoAlternateIcon 
+                onClick={handleChooseImg}
+                />
               </Box>
     
 
 
               <Box sx={{
-                display: 'flex', justifyContent: 'center', marginTop: '20px'
+                display: 'flex', justifyContent: 'center', marginTop: '20px', position: 'relative'
               }}>
                 <TextField
                   sx={{ width: '100%' }}
@@ -198,12 +220,13 @@ const Edit = () => {
                   rows={4}
                   variant="filled"
                   value={description}
+                  margin="normal"
                   onChange={(e) => setDescription(e.target.value)}
                 />
               </Box>
 
               <Box sx={{
-                display: 'flex', justifyContent: 'center', marginTop: '20px', paddingBottom: "80px"
+                display: 'flex', justifyContent: 'center', marginTop: '20px', paddingBottom: "80px", position: 'relative'
               }}>
                 <TextField
                   sx={{ width: '100%' }}
