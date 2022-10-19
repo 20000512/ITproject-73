@@ -16,22 +16,7 @@ import DeleteOutlineIcon from '@mui/icons-material/DeleteOutline';
 const Search = () => {
   const navigate = useNavigate();
 
-  const [data, setData] = useState([{
-    id: 1,
-    cover: oneImg,
-    title: 'Food Title Food Title Food Title',
-    description: 'Food description Food description Food description Food description Food description Food description Food description Food description Food description Food description Food description Food description',
-  }, {
-    id: 2,
-    cover: oneImg,
-    title: 'Food Title Food Title Food Title',
-    description: 'Food description Food description Food description Food description Food description Food description Food description Food description Food description Food description Food description Food description',
-  }, {
-    id: 3,
-    cover: oneImg,
-    title: 'Food Title Food Title Food Title',
-    description: 'Food description Food description Food description Food description Food description Food description Food description Food description Food description Food description Food description Food description',
-  }])
+  const [data, setData] = useState([]);
 
   const [list, setList] = useState([]);
   const [show, setShow] = useState(false);

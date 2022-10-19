@@ -17,10 +17,12 @@ import SaveAsOutlinedIcon from "@mui/icons-material/SaveAsOutlined";
 import RuleFolderOutlinedIcon from '@mui/icons-material/RuleFolderOutlined';
 import axios from 'axios';
 import React, { useRef } from 'react';
+import toast from 'react-hot-toast';
 
 const Profile = () => {
   
   const navigate = useNavigate();
+  
   const [resultArray, setResultArray] = useState([]);
   
   useEffect(() => {
@@ -70,6 +72,26 @@ const Profile = () => {
       setDraft(data);
     }
   }, []);
+
+  const [avatar, setAvatar] = useState(avatarImg);
+  const handleChooseImg = (e) => {
+    e.preventDefault();
+    const input = document.createElement('input');
+    input.type = 'file';
+    input.accept = '.jpg, .jpeg, .png';
+    input.click();
+    input.onchange = async () => {
+      try {
+        const reader = new FileReader();
+        reader.addEventListener('load', () => {
+          setAvatar(reader.result.toString() || '')
+        });
+        reader.readAsDataURL(input.files[0]);
+      } catch (error) {
+        toast.error('Upload error');
+      }
+    };
+  }
 
   const renderItem = () => {
     switch (tab) {
@@ -170,11 +192,7 @@ const Profile = () => {
             }}
           >
             <Box sx={{ flex: 1, display: "flex", alignItems: "center" }}>
-              <img
-                src={avatarImg}
-                alt=""
-                style={{ width: "150px", height: "150px", borderRadius: "50%" }}
-              />
+            <img onClick={handleChooseImg} src={avatar} alt="" style={{ width: "140px", height: "140px", borderRadius: "50%" }} />
               <Typography sx={{ ml: "24px" }} variant="h4">
                 Sam
               </Typography>

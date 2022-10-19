@@ -1,4 +1,4 @@
-import { Box, TextField, Typography, InputAdornment } from '@mui/material';
+import { Box, TextField, Typography, Button } from '@mui/material';
 import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import PageWrapper from '../../components/pagewrapper';
@@ -6,14 +6,39 @@ import ArrowBackIosIcon from "@mui/icons-material/ArrowBackIos";
 import Navpagewrapper from '../../components/navpagewrapper';
 import NavBarWrapper from '../../components/navbarwrapper';
 import avatarImg from "../../assets/avatar.jpg";
+import toast from 'react-hot-toast';
 
 const ChangePassword = () => {
   const navigate = useNavigate();
-  const [email, setEmail] = useState('xxx@xx.com');
+  const [email, setEmail] = useState('');
   const [gender, setGender] = useState('male');
-  const [family, setFamily] = useState('XXXX');
-  const [given, setGiven] = useState('XXXX');
+  const [family, setFamily] = useState('');
+  const [given, setGiven] = useState('');
   const [username, setUsername] = useState('Sum');
+  const [avatar, setAvatar] = useState(avatarImg);
+  const handleClick = () => {
+    if (!username) return toast.error('Email cannot be blank');
+    toast.success('Username changed');
+  };
+
+  const handleChooseImg = (e) => {
+    e.preventDefault();
+    const input = document.createElement('input');
+    input.type = 'file';
+    input.accept = '.jpg, .jpeg, .png';
+    input.click();
+    input.onchange = async () => {
+      try {
+        const reader = new FileReader();
+        reader.addEventListener('load', () => {
+          setAvatar(reader.result.toString() || '')
+        });
+        reader.readAsDataURL(input.files[0]);
+      } catch (error) {
+        toast.error('Upload error');
+      }
+    };
+  }
 
   return (
     <PageWrapper>
@@ -47,7 +72,7 @@ const ChangePassword = () => {
               <Box sx={{
               display: 'flex',
             }}>
-                <img src={avatarImg} alt="" style={{ width: "140px", height: "140px", borderRadius: "50%" }} />
+                <img onClick={handleChooseImg} src={avatar} alt="" style={{ width: "140px", height: "140px", borderRadius: "50%" }} />
                 <Box sx={{
                 display: 'flex', justifyContent: 'center', width: '100%', ml: '30px', mt: '20px'
               }}>
@@ -76,6 +101,7 @@ const ChangePassword = () => {
                   margin="normal"
                   variant="outlined"
                   value={given}
+                  disabled
                   onChange={(e) => setGiven(e.target.value)}
                 />
               </Box>
@@ -91,6 +117,7 @@ const ChangePassword = () => {
                   margin="normal"
                   variant="outlined"
                   value={family}
+                  disabled
                   onChange={(e) => setFamily(e.target.value)}
                 />
               </Box>
@@ -106,6 +133,7 @@ const ChangePassword = () => {
                   margin="normal"
                   variant="outlined"
                   value={gender}
+                  disabled
                   onChange={(e) => setGender(e.target.value)}
                 />
               </Box>
@@ -121,9 +149,13 @@ const ChangePassword = () => {
                   margin="normal"
                   variant="outlined"
                   value={email}
+                  disabled
                   onChange={(e) => setEmail(e.target.value)}
                 />
               </Box>
+              <Button onClick={() => handleClick()} sx={{ marginTop: '30px', background: '#ffa65c', color: 'white' }} variant="outlined" color="warning">
+                Save
+              </Button>
             </Box>
           </form>
         </Box>
