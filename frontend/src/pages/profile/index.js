@@ -16,7 +16,10 @@ import PostAddOutlinedIcon from "@mui/icons-material/PostAddOutlined";
 import SaveAsOutlinedIcon from "@mui/icons-material/SaveAsOutlined";
 import RuleFolderOutlinedIcon from '@mui/icons-material/RuleFolderOutlined';
 import axios from 'axios';
+import React, { useRef } from 'react';
+
 const Profile = () => {
+  
   const navigate = useNavigate();
   const [resultArray, setResultArray] = useState([]);
 
@@ -31,39 +34,29 @@ const Profile = () => {
       expensesListResp();
     }, []);
   console.log(resultArray);
-  const [data, setData] = useState([
-    {
-      id: 1,
-      cover: oneImg,
-      title: "Food Title Food Title Food Title",
-      description:
-        "Food description Food description Food description Food description Food description Food description Food description Food description Food description Food description Food description Food description",
-    },
-    {
-      id: 2,
-      cover: oneImg,
-      title: "Food Title Food Title Food Title",
-      description:
-        "Food description Food description Food description Food description Food description Food description Food description Food description Food description Food description Food description Food description",
-    },
-    {
-      id: 3,
-      cover: oneImg,
-      title: "Food Title Food Title Food Title",
-      description:
-        "Food description Food description Food description Food description Food description Food description Food description Food description Food description Food description Food description Food description",
-    },
-  ]);
+  const arrayLength = (resultArray.data?.length)
+  console.log(arrayLength); //2
+  
+  
+  
+  var postData = [];
+  for (var i = 0; i < arrayLength; i++){
+    postData[i] = ({
+      id: resultArray.data?.[i]._id,
+      cover: resultArray.data?.[i].cover,
+      title: resultArray.data?.[i].title,
+      description: resultArray.data?.[i].description,
+    })
+  }
+  
+  const data = postData;
+  console.log(data);
+
+
+  
   const [draft, setDraft] = useState([]);
-  const [like, setLike] = useState([
-    {
-      id: 1,
-      cover: oneImg,
-      title: "Food Title Food Title Food Title",
-      description:
-        "Food description Food description Food description Food description Food description Food description Food description Food description Food description Food description Food description Food description",
-    },
-  ]);
+  const [like, setLike] = useState([]);
+  
   const [tab, setTab] = useState(1);
 
   const handleDraft = (e, index) => {
