@@ -13,9 +13,9 @@ const recipeSchema = new Schema({
     description: {type: String, max:1000},
     content: {type: String, max:10000},
 
-    likes: {type: Array, default: []},
+    likes: {type: [String], default: []},
     likesCount: {type: Number, default: 0},
-    comments: {type: Array, default: []},
+    comments: {type: [String], default: []},
     commentsCount: {type: Number, default: 0},
     //change to enum? https://stackoverflow.com/questions/29299477/how-to-create-and-use-enum-in-mongoose
     // State is either "published" or "draft"

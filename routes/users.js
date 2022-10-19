@@ -54,10 +54,43 @@ router.route('/draft').get(checkAuth, async (req, res) => {
     const { page = 1, limit = 10 } = req.query;
 
     try {
-        // Set filter for userId and published recipes
+        // Set filter for userId and draft recipes
         const filter = {
             userId: req.userData.id,
             state: "draft"
+        };
+        
+        // Get recipes sorted by createdAt descending
+        const query = await Recipe.find(filter)
+            .sort({createdAt: -1})
+            .limit(limit * 1)
+            .skip((page - 1) * limit);
+
+        // Get total number of pages
+        const docCount = await Recipe.countDocuments(filter);
+        const totalPage = Math.ceil(docCount / limit);
+        
+        // Return results
+        res.status(200).json({
+            data: query,
+            currentPage: page,
+            totalPage: totalPage
+        });
+    } catch (err) {
+        //unknown error
+        res.status(500).json('Error: ' + err);
+    }
+})
+
+//get liked recipes, sorted by createdAt descending
+router.route('/like').get(checkAuth, async (req, res) => {
+    const { page = 1, limit = 10 } = req.query;
+
+    try {
+        // Set filter for userId in likes and published recipes
+        const filter = {
+            likes: req.userData.id,
+            state: "published"
         };
         
         // Get recipes sorted by createdAt descending
