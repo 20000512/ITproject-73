@@ -168,7 +168,7 @@ router.route('/search/:keyword').get( async (req, res) => {
             "$or":[
                 {title:{$regex:req.params.keyword}},
                 {description:{$regex:req.params.keyword}},
-                {recipeText:{$regex:req.params.keyword}}
+                {content:{$regex:req.params.keyword}}
             ]
         };
 
