@@ -29,6 +29,7 @@ router.route('/signup').post(async (req, res) => {
     const email = req.body.email;
     const password = await bcrypt.hash(req.body.password, 10);
     const username = req.body.username;
+    
     //check if user already exists
     const oldUser = User.find({email: email});
     if((await oldUser).length >= 1){
@@ -83,18 +84,20 @@ router.route('/update').put(checkAuth, (req, res) => {
         
 });
 
-
 //delete user by id,his recipes and likes
 router.route('/delete').put(checkAuth, async (req, res) => {
-    try{
+    try {
+        // Delete recipes authored by this user
         await Recipe.deleteMany({userId: req.userData.id});
+        // Remove user like records
         await Recipe.updateMany(   
             {$pull: { likes: req.userData.id}}
         );
+        // Delete user
         await User.findByIdAndDelete(req.userData.id);
         
         res.status(200).json('User deleted');
-    }catch(err){
+    } catch(err) {
         //unknown error
         res.status(500).json('Error: ' + err);
     }

@@ -30,35 +30,58 @@ router.route('/').get((req, res) => {
     Recipe.find()
         .then(recipes => res.json(recipes))
         .catch(err => res.status(400).json('Error: ' + err));
-});
-
+})
 
 //create a new recipe
-router.route('/add').post(checkAuth,upload.single('image') ,(req, res) => {
-    const title = req.body.title;
-    const description = req.body.description;
-    const image = req.body.cover;
-    const content = req.body.contect;
-
+router.route('/add').post(checkAuth, (req, res) => {
     //include userID to attribute recipe author
     const newBody = {
-        title: req.userData.id
+        userId: req.userData.id,
+        ...req.body
     }
-    const userId = req.userData.id;
-    console.log(req.body);
-    const newRecipe = new Recipe({title,description,userId})
+
+    const newRecipe = new Recipe(newBody);
     
     newRecipe.save()
         .then(() => res.status(201).json('Recipe added'))
         .catch(err => res.status(500).json('Error: ' + err));
-});
+})
+
+//get hottest recipe by likes
+router.route('/hot').get(async (req, res) => {
+    const { page = 1, limit = 10 } = req.query;
+
+    try {
+        // Set filter based on keyword
+        const filter = {state: "published"};
+        
+        // Get recipes sorted by likes descending
+        const query = await Recipe.find(filter)
+            .sort({likesCount: -1})
+            .limit(limit * 1)
+            .skip((page - 1) * limit);
+
+        // Get total number of pages
+        const docCount = await Recipe.countDocuments(filter);
+        const totalPage = Math.ceil(docCount / limit);
+            
+        res.status(200).json({
+            data: query,
+            currentPage: page,
+            totalPage: totalPage
+        });
+    } catch (err) {
+        //unknown error
+        res.status(500).json('Error: ' + err);
+    }
+})
 
 //get recipe by ID
-router.route('/:id').get((req, res) => {
+router.route('/:id').get(checkObjID, (req, res) => {
     Recipe.findById(req.params.id)
         .then(recipes => res.json(recipes))
         .catch(err => res.status(400).json('Error: ' + err));
-});
+})
 
 //delete recipe by ID
 router.route('/:id').delete(checkAuth, checkObjID, async (req, res) => {
@@ -80,7 +103,7 @@ router.route('/:id').delete(checkAuth, checkObjID, async (req, res) => {
         //unknown error
         res.status(500).json('Error: ' + err);
     }
-});
+})
 
 //update a recipe
 router.route('/update/:id').put(checkAuth, checkObjID, async (req, res) => {
@@ -103,7 +126,7 @@ router.route('/update/:id').put(checkAuth, checkObjID, async (req, res) => {
         //unknown error
         res.status(500).json('Error: ' + err);
     }   
-});
+})
 
 //like or unlike a recipe
 router.route('/like/:id').put(checkAuth, checkObjID, async (req, res) => {
@@ -114,11 +137,17 @@ router.route('/like/:id').put(checkAuth, checkObjID, async (req, res) => {
             res.status(404).json('Recipe do not exist');
         } else if (!recipe.likes.includes(req.userData.id)){
             //user did not like this recipe before, like recipe now
-            await recipe.updateOne({$push: {likes: req.userData.id}});
+            await recipe.updateOne({
+                $push: {likes: req.userData.id},
+                $inc: {likesCount: 1}
+            });
             res.status(200).json("The recipe has been liked");
         } else {
             //user like this recipe before, unlike recipe now
-            await recipe.updateOne({$pull: {likes: req.userData.id}});
+            await recipe.updateOne({
+                $pull: {likes: req.userData.id},
+                $inc: {likesCount: -1}
+            });
             res.status(200).json("The recipe has been unliked");
         }
     } catch (err) {
@@ -132,7 +161,7 @@ router.route('/search/:keyword').get( async (req, res) => {
     const { page = 1, limit = 10 } = req.query;
     
     try {
-        // Set filter
+        // Set filter based on keyword
         const filter = {
             "$or":[
                 {title:{$regex:req.params.keyword}},
