@@ -119,8 +119,9 @@ const Edit = () => {
     const recipe = {
       title:title,
       description:description,
-      cover:cover,
-      content:content
+      cover:localStorage.getItem("image"),
+      content:content,
+      state:"published"
       }
     axios.post('http://localhost:5003/recipes/add',recipe,{
       headers: {

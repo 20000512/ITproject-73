@@ -15,10 +15,14 @@ import FavoriteBorderIcon from "@mui/icons-material/FavoriteBorder";
 import PostAddOutlinedIcon from "@mui/icons-material/PostAddOutlined";
 import SaveAsOutlinedIcon from "@mui/icons-material/SaveAsOutlined";
 import RuleFolderOutlinedIcon from '@mui/icons-material/RuleFolderOutlined';
-
-const Profile = () => {
+import axios from 'axios';
+const Profile = async() => {
   const navigate = useNavigate();
-
+  const res = await axios.get('http://localhost:5003/users/post',{
+    headers: {
+      'authorization': 'Bearer ' + localStorage.getItem("username")
+    }});
+  console.log(res);
   const [data, setData] = useState([
     {
       id: 1,

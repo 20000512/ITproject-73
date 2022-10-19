@@ -130,6 +130,8 @@ class ImageUploadCard extends React.Component {
     reader.addEventListener("load", () => {
       // convert image file to base64 string
       url =reader.result;
+      console.log(url);
+      localStorage.setItem('image', (url));
     });
     reader.readAsDataURL(file);
     reader.onloadend = function(e) {
