@@ -163,12 +163,15 @@ router.route('/search/:keyword').get( async (req, res) => {
     const { page = 1, limit = 10 } = req.query;
     
     try {
-        // Set filter based on keyword
+        // Set filter based on case-insensitive keyword and published recipes
         const filter = {
-            "$or":[
-                {title:{$regex:req.params.keyword}},
-                {description:{$regex:req.params.keyword}},
-                {content:{$regex:req.params.keyword}}
+            "$and": [
+                {"$or": [
+                    {title:{$regex:req.params.keyword, $options: 'i'}},
+                    {description:{$regex:req.params.keyword, $options: 'i'}},
+                    {content:{$regex:req.params.keyword, $options: 'i'}}
+                ]},
+                {state: 'published'}
             ]
         };
 
