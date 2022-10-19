@@ -115,11 +115,16 @@ router.route('/like').get(checkAuth, async (req, res) => {
     }
 })
 
-//get user by id
-router.route('/:id').get((req, res) => {
-    User.findById(req.params.id)
+//Get profile
+router.route('/profile').get(checkAuth, (req, res) => {
+    //Set fields that are needed: username and profile picture
+    const fields = {username: 1, profilePicture: 1};
+
+    //Return profile: username and profile picture
+    User.findById(req.userData.id)
+        .select(fields)
         .then(user => res.json(user))
-        .catch(err => res.status(400).json('Error: ' + err));//check
+        .catch(err => res.status(500).json('Error: ' + err));
 });
 
 //signup
