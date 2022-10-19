@@ -7,7 +7,7 @@ const recipeSchema = new Schema({
         type: String,
         required: true
     },
-    image: {type: String},
+    cover: {type: String},
     title: {type: String, required: true},
     // Is size limit required for description and content?
     description: {type: String, max:1000},
