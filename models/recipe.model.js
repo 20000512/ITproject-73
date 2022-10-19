@@ -9,9 +9,8 @@ const recipeSchema = new Schema({
     },
     cover: {type: String},
     title: {type: String, required: true},
-    // Is size limit required for description and content?
-    description: {type: String, max:1000},
-    content: {type: String, max:10000},
+    description: {type: String},
+    content: {type: String},
 
     likes: {type: [String], default: []},
     likesCount: {type: Number, default: 0},

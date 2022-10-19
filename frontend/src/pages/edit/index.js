@@ -83,37 +83,25 @@ const Edit = () => {
   const [content, setContent] = useState('');
 
   const handleSave = () => {
-    const data = JSON.parse(localStorage.getItem('draft'));
-    if (data) {
-      if (type === 'edit') {
-        const index = localStorage.getItem('draftIndex');
-        data[index] = {
-          cover,
-          title,
-          description,
-          content
-        }
-      } else {
-        data.push({
-          cover,
-          title,
-          description,
-          content
-        });
+    const recipe = {
+      title:title,
+      description:description,
+      cover:localStorage.getItem("image"),
+      content:content,
+      state:"draft"
       }
-      localStorage.setItem('draft', JSON.stringify(data));
+    axios.post('http://localhost:5003/recipes/add',recipe,{
+      headers: {
+        'authorization': 'Bearer ' + localStorage.getItem("username") //the token is a variable which holds the token
+      }})
+    .then(res => {
+      console.log(res.data)
+      navigate('/profile');
+      })
+    .catch((error) => { console.error(error) });//login or password worng
+ 
 
-    } else {
-      localStorage.setItem('draft', JSON.stringify([{
-        cover,
-        title,
-        description,
-        content
-      }]));
-    }
-    localStorage.getItem('draft'.cover)
-    navigate('/profile');
-  }
+  };
   
   const handleClick = () => {
     const recipe = {
