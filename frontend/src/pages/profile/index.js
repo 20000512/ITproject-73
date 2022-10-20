@@ -26,6 +26,7 @@ const Profile = () => {
   const [resultArray, setResultArray] = useState([]);
   const [resultArraydraft, setResultArraydraft] = useState([]);
   const [resultuser, setuser] = useState([]);
+  const [resultArraylikes, setResultArraylikes] = useState([]);
   useEffect(() => {
       const expensesListResp = async () => {
         await axios.get('http://localhost:5003/users/post',{headers: {
@@ -58,7 +59,20 @@ const Profile = () => {
     }
     expensesuser();
   }, []);
-  console.log(resultuser);
+  
+  useEffect(() => {
+    const expensesListResplikes = async () => {
+      await axios.get('http://localhost:5003/users/like',{headers: {
+        'authorization': 'Bearer ' + localStorage.getItem("username") //the token is a variable which holds the token
+      }})
+      .then(
+        response => setResultArraylikes(response.data))
+    }
+    expensesListResplikes();
+  }, []);
+  console.log(resultArraylikes);
+  const arrayLengthlikes = (resultArraydraft.data?.length)
+  console.log(arrayLengthlikes); //3
   var postData = [];
   for (var i = 0; i < arrayLength; i++){
     postData[i] = ({
