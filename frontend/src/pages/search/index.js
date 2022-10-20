@@ -4,7 +4,7 @@ import PageWrapper from '../../components/pagewrapper';
 import NavBarWrapper from '../../components/navbarwrapper';
 import Navpagewrapper from '../../components/navpagewrapper';
 import ItemCard from '../../components/itemcard';
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import ArrowBackIosIcon from "@mui/icons-material/ArrowBackIos";
 import Paper from '@mui/material/Paper';
@@ -12,7 +12,7 @@ import InputBase from '@mui/material/InputBase';
 import SearchIcon from '@mui/icons-material/Search';
 import IconButton from '@mui/material/IconButton';
 import DeleteOutlineIcon from '@mui/icons-material/DeleteOutline';
-
+import axios from 'axios';
 const Search = () => {
   const navigate = useNavigate();
 
@@ -21,12 +21,21 @@ const Search = () => {
   const [list, setList] = useState([]);
   const [show, setShow] = useState(false);
   const [keywords, setKeywords] = useState('');
-
+  const [resultArray, setResultArray] = useState([]);
   const handleSearch = () => {
     setList(Array.from(new Set([keywords, ...list])));
     setShow(true);
   }
-
+  useEffect(() => {
+    const expensesListResp = async () => {
+      await axios.get('http://localhost:5003/recipes/search/'+keywords,{headers: {
+        'authorization': 'Bearer ' + localStorage.getItem("username") //the token is a variable which holds the token
+      }})
+      .then(
+        response => setResultArray(response.data))
+    }
+    expensesListResp();
+  }, []);
   const handleResearch = (e) => {
     setKeywords(e);
     handleSearch();

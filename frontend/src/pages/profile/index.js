@@ -25,6 +25,8 @@ const Profile = () => {
   
   const [resultArray, setResultArray] = useState([]);
   const [resultArraydraft, setResultArraydraft] = useState([]);
+  const [resultArraylikes, setResultArraylikes] = useState([]);
+  const [resultuser, setuser] = useState([]);
   useEffect(() => {
       const expensesListResp = async () => {
         await axios.get('http://localhost:5003/users/post',{headers: {
@@ -35,9 +37,7 @@ const Profile = () => {
       }
       expensesListResp();
     }, []);
-  console.log(resultArray);
   const arrayLength = (resultArray.data?.length)
-  console.log(arrayLength); //2
   useEffect(() => {
     const expensesListRespdraft = async () => {
       await axios.get('http://localhost:5003/users/draft',{headers: {
@@ -48,10 +48,37 @@ const Profile = () => {
     }
     expensesListRespdraft();
   }, []);
+<<<<<<< HEAD
   console.log(resultArraydraft);
   const arrayLengthdraft = (resultArraydraft.data?.length)
   console.log(arrayLengthdraft); //2
+=======
+  const arrayLengthdraft = (resultArray.data?.length)
+  useEffect(() => {
+    const expensesuser = async () => {
+      await axios.get('http://localhost:5003/users/profile',{headers: {
+        'authorization': 'Bearer ' + localStorage.getItem("username") //the token is a variable which holds the token
+      }})
+      .then(
+        response => setuser(response.data))
+    }
+    expensesuser();
+  }, []);
+>>>>>>> 9329f5c5fad859308fa2640ce0a423d1a0eda17f
   
+  useEffect(() => {
+    const expensesListResplikes = async () => {
+      await axios.get('http://localhost:5003/users/like',{headers: {
+        'authorization': 'Bearer ' + localStorage.getItem("username") //the token is a variable which holds the token
+      }})
+      .then(
+        response => setResultArraylikes(response.data))
+    }
+    expensesListResplikes();
+  }, []);
+  console.log(resultArraylikes);
+  const arrayLengthlikes = (resultArraydraft.data?.length)
+  console.log(arrayLengthlikes); //3
   var postData = [];
   for (var i = 0; i < arrayLength; i++){
     postData[i] = ({

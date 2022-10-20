@@ -1,4 +1,4 @@
-import { Box, TextField, Typography, Button } from '@mui/material';
+import { Box, TextField, Typography, Button, imageListClasses } from '@mui/material';
 import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import PageWrapper from '../../components/pagewrapper';
@@ -7,7 +7,6 @@ import Navpagewrapper from '../../components/navpagewrapper';
 import NavBarWrapper from '../../components/navbarwrapper';
 import avatarImg from "../../assets/avatar.jpg";
 import toast from 'react-hot-toast';
-
 const ChangePassword = () => {
   const navigate = useNavigate();
   const [email, setEmail] = useState('');
@@ -20,7 +19,7 @@ const ChangePassword = () => {
     if (!username) return toast.error('Email cannot be blank');
     toast.success('Username changed');
   };
-
+  
   const handleChooseImg = (e) => {
     e.preventDefault();
     const input = document.createElement('input');
@@ -32,6 +31,8 @@ const ChangePassword = () => {
         const reader = new FileReader();
         reader.addEventListener('load', () => {
           setAvatar(reader.result.toString() || '')
+          const url = reader.result
+          localStorage.setItem("image",url);
         });
         reader.readAsDataURL(input.files[0]);
       } catch (error) {
