@@ -24,7 +24,7 @@ const Profile = () => {
   const navigate = useNavigate();
   
   const [resultArray, setResultArray] = useState([]);
-  
+  const [resultArraydraft, setResultArraydraft] = useState([]);
   useEffect(() => {
       const expensesListResp = async () => {
         await axios.get('http://localhost:5003/users/post',{headers: {
@@ -38,8 +38,19 @@ const Profile = () => {
   console.log(resultArray);
   const arrayLength = (resultArray.data?.length)
   console.log(arrayLength); //2
-  
-  
+  useEffect(() => {
+    const expensesListRespdraft = async () => {
+      await axios.get('http://localhost:5003/users/draft',{headers: {
+        'authorization': 'Bearer ' + localStorage.getItem("username") //the token is a variable which holds the token
+      }})
+      .then(
+        response => setResultArraydraft(response.data))
+    }
+    expensesListRespdraft();
+  }, []);
+  console.log(resultArraydraft);
+  const arrayLengthdraft = (resultArray.data?.length)
+  console.log(arrayLengthdraft); //2
   
   var postData = [];
   for (var i = 0; i < arrayLength; i++){
