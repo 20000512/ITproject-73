@@ -1,6 +1,7 @@
-    const router = require('express').Router();
+const router = require('express').Router();
 const bcrypt  = require('bcryptjs');
-const jwt = require('jsonwebtoken')
+const jwt = require('jsonwebtoken');
+const crypto  = require('crypto');
 //check authentication through JWT
 const checkAuth = require('../middleware/check_auth');
 //check format of object ID
@@ -15,6 +16,13 @@ router.route('/').get((req, res) => {
         .then(users => res.json(users))
         .catch(err => res.status(400).json('Error: ' + err));
 });
+
+//delete all users
+router.route('/').delete((req, res) => {
+    User.remove({})
+        .then(() => console.log('All users removed'))
+        .catch(err => console.log(err));
+})
 
 //get posted recipes, sorted by createdAt descending
 router.route('/post').get(checkAuth, async (req, res) => {
@@ -152,7 +160,7 @@ router.route('/signup').post(async (req, res) => {
 router.post("/login", async (req, res) => {
     try {
         const {email,password} = req.body;
-        const user = await User.findOne({email: email});
+        const user = await User.findOne({email: email.toLowerCase()});
 
         if(!user || !await bcrypt.compare(password, user.password)){
             //login failed
@@ -160,7 +168,11 @@ router.post("/login", async (req, res) => {
         }
         else {
             //login successful, create JWT token
-            const token = jwt.sign({id: user._id, email: user.email},JWT_SECRET);
+            const currentLoginTime = Date.now();
+            const token = jwt.sign({id: user._id, loginTime: currentLoginTime},JWT_SECRET);
+
+            await user.updateOne({$set: {currentLoginTime: currentLoginTime}});
+
             res.status(200).json({message: 'Login successful', token: token});
         }
     } catch (err){

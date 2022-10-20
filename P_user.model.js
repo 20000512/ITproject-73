@@ -12,23 +12,25 @@ const userSchema = new Schema({
         minlength: 3,
         maxlength: 40
     },
-    password:{
-        type:String,
-        required:true,
-        min:3
+    password: {
+        type: String,
+        required: true,
+        min: 3
     },
     username: {
         type: String,
-        required:true
+        required: true
     },
-    profilePicture:{
-        type:String,
-        default:""
+    
+    profilePicture: {
+        type: String,
+        default: ""
     },
 
     // Store current session hashed token, prevent concurrent login
-    currentLoginTime: {
-        type: Number,
+    currentToken: {
+        type: String,
+        default: ""
     }
 }, {
     timestamps: true,

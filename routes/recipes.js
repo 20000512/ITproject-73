@@ -32,6 +32,13 @@ router.route('/').get((req, res) => {
         .catch(err => res.status(400).json('Error: ' + err));
 })
 
+//delete all recipes
+router.route('/').delete((req, res) => {
+    Recipe.remove({})
+        .then(() => console.log('All recipes removed'))
+        .catch(err => console.log(err));
+})
+
 //create a new recipe
 router.route('/add').post(checkAuth, (req, res) => {
     //include userID to attribute recipe author
