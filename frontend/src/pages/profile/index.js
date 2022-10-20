@@ -49,7 +49,7 @@ const Profile = () => {
     expensesListRespdraft();
   }, []);
   console.log(resultArraydraft);
-  const arrayLengthdraft = (resultArray.data?.length)
+  const arrayLengthdraft = (resultArraydraft.data?.length)
   console.log(arrayLengthdraft); //2
   
   var postData = [];
@@ -64,7 +64,6 @@ const Profile = () => {
   
   const data = postData;
   console.log(data);
-
 
   
   const [draft, setDraft] = useState([]);
