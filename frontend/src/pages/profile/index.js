@@ -82,7 +82,12 @@ const Profile = () => {
       description: resultArray.data?.[i].description,
     })
   }
-  
+  const coverpage = {
+
+  }
+  axios.put('http://localhost:5003/users/update',cover,{headers: {
+        'authorization': 'Bearer ' + localStorage.getItem("username") //the token is a variable which holds the token
+      }})
   const data = postData;
   console.log(data);
 
