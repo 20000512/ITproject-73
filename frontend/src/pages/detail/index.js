@@ -35,11 +35,10 @@ const style = {
 const Home = () => {
   const navigate = useNavigate();
   const params = useParams(); //'634fdf39f48984c37b7a40b0' //String
-  console.log("aaaaaaaaaaaaaaaaaaaaaaaaaaa");
   const [resultArray, setResultArray] = useState([]);
   useEffect(() => {
     const expensesListResp = async () => {
-      await axios.get('http://localhost:5003/users/post',{headers: {
+      await axios.get('/users/post',{headers: {
         'authorization': 'Bearer ' + localStorage.getItem("username") //the token is a variable which holds the token
       }})
       .then(

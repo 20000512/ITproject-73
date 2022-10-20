@@ -24,7 +24,7 @@ const Login = () => {
       password : password
     }
     console.log(user);
-    axios.post('http://localhost:5003/users/login',user)
+    axios.post('/users/login',user)
       .then(res => {
         console.log(res.data)
         localStorage.setItem('username', (res.data.token))

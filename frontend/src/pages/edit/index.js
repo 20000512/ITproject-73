@@ -137,7 +137,7 @@ const Edit = () => {
       content:content,
       state:"published"
       }
-    axios.post('http://localhost:5003/recipes/add',recipe,{
+    axios.post('/recipes/add',recipe,{
       headers: {
         'authorization': 'Bearer ' + localStorage.getItem("username") //the token is a variable which holds the token
       }})

@@ -29,7 +29,7 @@ const Profile = () => {
   const [resultuser, setuser] = useState([]);
   useEffect(() => {
       const expensesListResp = async () => {
-        await axios.get('http://localhost:5003/users/post',{headers: {
+        await axios.get('/users/post',{headers: {
           'authorization': 'Bearer ' + localStorage.getItem("username") //the token is a variable which holds the token
         }})
         .then(
@@ -40,7 +40,7 @@ const Profile = () => {
   const arrayLength = (resultArray.data?.length)
   useEffect(() => {
     const expensesListRespdraft = async () => {
-      await axios.get('http://localhost:5003/users/draft',{headers: {
+      await axios.get('/users/draft',{headers: {
         'authorization': 'Bearer ' + localStorage.getItem("username") //the token is a variable which holds the token
       }})
       .then(
@@ -55,7 +55,7 @@ const Profile = () => {
 
   useEffect(() => {
     const expensesuser = async () => {
-      await axios.get('http://localhost:5003/users/profile',{headers: {
+      await axios.get('/users/profile',{headers: {
         'authorization': 'Bearer ' + localStorage.getItem("username") //the token is a variable which holds the token
       }})
       .then(
@@ -67,7 +67,7 @@ const Profile = () => {
   
   useEffect(() => {
     const expensesListResplikes = async () => {
-      await axios.get('http://localhost:5003/users/like',{headers: {
+      await axios.get('/users/like',{headers: {
         'authorization': 'Bearer ' + localStorage.getItem("username") //the token is a variable which holds the token
       }})
       .then(

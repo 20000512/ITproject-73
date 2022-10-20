@@ -14,7 +14,7 @@ const Home = () => {
   const [resultArray, setResultArray] = useState([]);
   useEffect(() => {
     const expensesListResp = async () => {
-      await axios.get('http://localhost:5003/users/post',{headers: {
+      await axios.get('/users/post',{headers: {
         'authorization': 'Bearer ' + localStorage.getItem("username") //the token is a variable which holds the token
       }})
       .then(
