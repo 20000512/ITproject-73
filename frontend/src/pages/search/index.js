@@ -21,12 +21,22 @@ const Search = () => {
   const [list, setList] = useState([]);
   const [show, setShow] = useState(false);
   const [keywords, setKeywords] = useState('');
-
+  const [resultArray, setResultArray] = useState([]);
   const handleSearch = () => {
     setList(Array.from(new Set([keywords, ...list])));
     setShow(true);
   }
-
+  useEffect(() => {
+    const expensesListResp = async () => {
+      await axios.get('http://localhost:5003/recipes/search/'+keywords,{headers: {
+        'authorization': 'Bearer ' + localStorage.getItem("username") //the token is a variable which holds the token
+      }})
+      .then(
+        response => setResultArray(response.data))
+    }
+    expensesListResp();
+  }, []);
+  resultArray
   const handleResearch = (e) => {
     setKeywords(e);
     handleSearch();

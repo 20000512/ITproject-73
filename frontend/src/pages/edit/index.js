@@ -86,6 +86,7 @@ const Edit = () => {
   const handleChooseImg = (e) => {
     e.preventDefault();
     const input = document.createElement('input');
+
     input.type = 'file';
     input.accept = '.jpg, .jpeg, .png';
     input.click();
@@ -94,11 +95,14 @@ const Edit = () => {
         const reader = new FileReader();
         reader.addEventListener('load', () => {
           setAvatar(reader.result.toString() || '')
+          const url = reader.result
+          localStorage.setItem("image",url);
         });
         reader.readAsDataURL(input.files[0]);
       } catch (error) {
         toast.error('Upload error');
       }
+      
     };
   }
 

@@ -15,7 +15,7 @@ import IosShareOutlinedIcon from "@mui/icons-material/IosShareOutlined";
 import ArrowBackIosIcon from "@mui/icons-material/ArrowBackIos";
 import { useNavigate } from "react-router-dom";
 import HighlightOffIcon from "@mui/icons-material/HighlightOff";
-
+import {Route, Link, Routes, useParams} from 'react-router-dom';
 const style = {
   position: "absolute",
   top: "50%",
@@ -31,7 +31,8 @@ const style = {
 
 const Home = () => {
   const navigate = useNavigate();
-
+  const params = useParams();
+  console.log(params);
   const [data, setData] = useState({
     id: 1,
     cover: oneImg,
