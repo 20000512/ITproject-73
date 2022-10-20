@@ -48,11 +48,12 @@ const Profile = () => {
     }
     expensesListRespdraft();
   }, []);
-
+<<<<<<< HEAD
   console.log(resultArraydraft);
   const arrayLengthdraft = (resultArraydraft.data?.length)
   console.log(arrayLengthdraft); //2
-
+=======
+  const arrayLengthdraft = (resultArray.data?.length)
   useEffect(() => {
     const expensesuser = async () => {
       await axios.get('/users/profile',{headers: {
@@ -63,7 +64,7 @@ const Profile = () => {
     }
     expensesuser();
   }, []);
-
+>>>>>>> 9329f5c5fad859308fa2640ce0a423d1a0eda17f
   
   useEffect(() => {
     const expensesListResplikes = async () => {
