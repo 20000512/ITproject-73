@@ -169,24 +169,21 @@ router.post("/login", async (req, res) => {
     }
 })
 
-//update user by id
-router.route('/update').put(checkAuth, (req, res) => {
-    User.findById(req.userData.id)
-        .then(user => {
-            user.email = req.body.email;
-            user.familyName = req.body.familyName;
-            user.givenName = req.body.givenName;
-            user.gender = req.body.gender;
-            user.profilePicture = req.body.profilePicture;
+//update user profile
+router.route('/update').put(checkAuth, async (req, res) => {
+    // If no field, replace with empty
+    const profilePicture = req.body.profilePicture ? req.body.profilePicture : "";
 
-            user.save()
-            .then(() => res.json('user updated.'))
-            .catch(err => res.status(400).json('Error: ' + err));
+    try {
+        const user = await User.findById(req.userData.id);
+        await user.updateOne({$set: {profilePicture: profilePicture}});
 
-
-        })
-        .catch(err => res.status(400).json('Error: ' + err));
-        
+        // User profile updated
+        res.status(200).json('user updated');
+    } catch(err) {
+        //unknown error
+        res.status(500).json('Error: ' + err);
+    }
 });
 
 //delete user by id,his recipes and likes
