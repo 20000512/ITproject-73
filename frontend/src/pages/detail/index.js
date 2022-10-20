@@ -35,6 +35,7 @@ const style = {
 const Home = () => {
   const navigate = useNavigate();
   const params = useParams(); //'634fdf39f48984c37b7a40b0' //String
+  console.log("aaaaaaaaaaaaaaaaaaaaaaaaaaa");
   const [resultArray, setResultArray] = useState([]);
   useEffect(() => {
     const expensesListResp = async () => {
@@ -50,23 +51,32 @@ const Home = () => {
   const arrayLength = (resultArray.data?.length);
 
   
-  var postData = [];
-  for (var i = 0; i < arrayLength; i++){
-    if(resultArray.data?.[i]._id == params.id){
-      postData[0] = ({
-        id: resultArray.data?.[i]._id,
-        cover: resultArray.data?.[i].cover,
-        title: resultArray.data?.[i].title,
-        description: resultArray.data?.[i].description,
+
+  const [data, setData] = useState({
+    id: 1,
+    cover: oneImg,
+    avatar: avatarImg,
+    author: "Tonny",
+    title: "Food Title Food Title Food Title",
+    description:
+      "Food description Food description Food description Food description Food description Food description Food description Food description Food description Food description Food description Food description",
+    content:
+      "<h5>this is richtext</h5><p>Food content Food content Food content Food content Food content Food content Food content Food content Food content Food content Food content Food content Food content Food content Food content Food content Food content Food content Food content Food content Food content Food content Food description Food description Food description.</p><h5>this is richtext</h5><p>Food content Food content Food content Food content Food content Food content Food content Food content Food content Food content Food content Food content Food content Food content Food content Food content Food content Food content Food content Food content Food content Food content Food description Food description Food description.</p><h5>this is richtext</h5><p>Food content Food content Food content Food content Food content Food content Food content Food content Food content Food content Food content Food content Food content Food content Food content Food content Food content Food content Food content Food content Food content Food content Food description Food description Food description.</p><h5>this is richtext</h5><p>Food content Food content Food content Food content Food content Food content Food content Food content Food content Food content Food content Food content Food content Food content Food content Food content Food content Food content Food content Food content Food content Food content Food description Food description Food description.</p><h5>this is richtext</h5><p>Food content Food content Food content Food content Food content Food content Food content Food content Food content Food content Food content Food content Food content Food content Food content Food content Food content Food content Food content Food content Food content Food content Food description Food description Food description.</p>",
+    comment: [
+      {
+        userid: 1,
         avatar: avatarImg,
-        content: resultArray.data?.[i].content,
-        comment: resultArray.data?.[i].comment
-      })
-    }
-  }
-  console.log(postData);
-  const data = postData[0];
-  console.log(data);
+        username: "Tonny",
+        content: "Food commnents",
+      },
+      {
+        userid: 2,
+        avatar: avatarImg,
+        username: "Tonny",
+        content: "Food commnents",
+      },
+    ],
+  });
 
   const [like, setLike] = useState(false);
   const [share, setShare] = useState(false);

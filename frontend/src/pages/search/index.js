@@ -26,16 +26,6 @@ const Search = () => {
     setList(Array.from(new Set([keywords, ...list])));
     setShow(true);
   }
-  useEffect(() => {
-    const expensesListResp = async () => {
-      await axios.get('http://localhost:5003/recipes/search/'+keywords,{headers: {
-        'authorization': 'Bearer ' + localStorage.getItem("username") //the token is a variable which holds the token
-      }})
-      .then(
-        response => setResultArray(response.data))
-    }
-    expensesListResp();
-  }, []);
   const handleResearch = (e) => {
     setKeywords(e);
     handleSearch();
