@@ -25,6 +25,7 @@ const Profile = () => {
   
   const [resultArray, setResultArray] = useState([]);
   const [resultArraydraft, setResultArraydraft] = useState([]);
+  const [resultuser, setuser] = useState([]);
   useEffect(() => {
       const expensesListResp = async () => {
         await axios.get('http://localhost:5003/users/post',{headers: {
@@ -35,9 +36,7 @@ const Profile = () => {
       }
       expensesListResp();
     }, []);
-  console.log(resultArray);
   const arrayLength = (resultArray.data?.length)
-  console.log(arrayLength); //2
   useEffect(() => {
     const expensesListRespdraft = async () => {
       await axios.get('http://localhost:5003/users/draft',{headers: {
@@ -48,10 +47,18 @@ const Profile = () => {
     }
     expensesListRespdraft();
   }, []);
-  console.log(resultArraydraft);
   const arrayLengthdraft = (resultArray.data?.length)
-  console.log(arrayLengthdraft); //2
-  
+  useEffect(() => {
+    const expensesuser = async () => {
+      await axios.get('http://localhost:5003/users/profile',{headers: {
+        'authorization': 'Bearer ' + localStorage.getItem("username") //the token is a variable which holds the token
+      }})
+      .then(
+        response => setuser(response.data))
+    }
+    expensesuser();
+  }, []);
+  console.log(resultuser);
   var postData = [];
   for (var i = 0; i < arrayLength; i++){
     postData[i] = ({
