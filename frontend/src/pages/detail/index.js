@@ -35,6 +35,8 @@ const style = {
 const Home = () => {
   const navigate = useNavigate();
   const params = useParams(); //'634fdf39f48984c37b7a40b0' //String
+  console.log(params);
+
   const [resultArray, setResultArray] = useState([]);
   useEffect(() => {
     const expensesListResp = async () => {
@@ -53,6 +55,7 @@ const Home = () => {
   var postData = [];
   for (var i = 0; i < arrayLength; i++){
     if(resultArray.data?.[i]._id == params.id){
+      console.log("equal");
       postData[0] = ({
         id: resultArray.data?.[i]._id,
         cover: resultArray.data?.[i].cover,
@@ -100,10 +103,7 @@ const Home = () => {
               sx={{ cursor: "pointer" }}
               onClick={() => navigate(-1)}
             />
-            <img
-              style={{ width: "40px", height: "40px", borderRadius: "50%" }}
-              src={data.avatar}
-            />
+            
             <Typography sx={{ ml: "16px" }}>{data.author}</Typography>
           </Box>
           <Box sx={{ mr: "30px" }}>
