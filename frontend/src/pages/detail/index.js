@@ -4,7 +4,7 @@ import { Box, Typography, Modal, TextField, Stack, Button } from "@mui/material"
 import PageWrapper from "../../components/pagewrapper";
 import NavBarWrapper from "../../components/navbarwrapper";
 import Navpagewrapper from "../../components/navpagewrapper";
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import BottomNavigation from "@mui/material/BottomNavigation";
 import BottomNavigationAction from "@mui/material/BottomNavigationAction";
 import Paper from "@mui/material/Paper";
@@ -15,6 +15,10 @@ import IosShareOutlinedIcon from "@mui/icons-material/IosShareOutlined";
 import ArrowBackIosIcon from "@mui/icons-material/ArrowBackIos";
 import { useNavigate } from "react-router-dom";
 import HighlightOffIcon from "@mui/icons-material/HighlightOff";
+import axios from 'axios';
+import {host} from '../host';
+import {Route, Link, Routes, useParams} from 'react-router-dom';
+
 
 const style = {
   position: "absolute",
@@ -31,7 +35,9 @@ const style = {
 
 const Home = () => {
   const navigate = useNavigate();
-
+  const params = useParams(); //'634fdf39f48984c37b7a40b0' //String
+  console.log(params)
+  const [resultArray, setResultArray] = useState([]);
   const [data, setData] = useState({
     id: 1,
     cover: oneImg,
@@ -57,7 +63,50 @@ const Home = () => {
       },
     ],
   });
+  
+  
+  useEffect(() => {
+    const expensesListResp = async () => {
+      axios.get(host + '/recipes/'+ params,{headers: {
+        'authorization': 'Bearer ' + localStorage.getItem("username") //the token is a variable which holds the token
+      }})
+      .then(
+        response => {console.log("lll");
+        setResultArray(response.data)})
+      
+  }
+    expensesListResp();
+  }, []);
+ 
+  const arrayLength = (resultArray.data?.length);
+  //console.log(arrayLength);
+  
+  if(resultArray){
+    setData(previousState => {
+      return { ...previousState,
+        cover: resultArray.data?.cover,
+        title: resultArray.data?.title,
+        description: resultArray.data?.description,
+        content: resultArray.data?.content
+      
+      }
+    })}
+  
+  
+/*
+  var postData = [];
+  for (var i = 0; i < arrayLength; i++){
+    postData[i] = ({
+      id: resultArray.data?.[i]._id,
+      cover: resultArray.data?.[i].cover,
+      title: resultArray.data?.[i].title,
+      description: resultArray.data?.[i].description,
+    })
+  }
+  */
+  //console.log(data);
 
+  
   const [like, setLike] = useState(false);
   const [share, setShare] = useState(false);
   const [comment, setComment] = useState(false);
@@ -129,30 +178,7 @@ const Home = () => {
                 Comments
               </Typography>
               <Box>
-                {data.comment.map((e, index) => (
-                  <Stack
-                    key={index}
-                    direction="row"
-                    alignItems="cneter"
-                    sx={{ my: "26px" }}
-                  >
-                    <Stack alignItems="center">
-                      <img
-                        style={{
-                          width: "50px",
-                          height: "50px",
-                          borderRadius: "50%",
-                        }}
-                        src={e.avatar}
-                        alt=""
-                      />
-                      <Typography variant="caption">{e.username}</Typography>
-                    </Stack>
-                    <Typography sx={{ ml: "20px", mt: "10px" }}>
-                      {e.content}
-                    </Typography>
-                  </Stack>
-                ))}
+                
               </Box>
             </Box>
           </Box>
