@@ -15,8 +15,8 @@ router.route('/').get((req, res) => {
 //delete all recipes (For convenience only, remove before handover)
 router.route('/').delete((req, res) => {
     Recipe.remove({})
-        .then(() => console.log('All recipes removed'))
-        .catch(err => console.log(err));
+        .then(() => res.status(200).json('All recipes removed'))
+        .catch(err => res.status(500).json(err));
 })
 
 //create a new recipe
@@ -265,7 +265,57 @@ router.route('/didlike/:id').get(checkAuth, checkObjID, async (req, res) => {
         res.status(500).json('Error: ' + err);
     }
 })
-//get timeline recipes
-//router.get("/timeline")
+
+//Add comment to a recipe
+router.route('/comments/:id').put(checkAuth, checkObjID, async (req, res) => {
+    //parse and construct comment JSON
+    const {comment = ''} = req.body;
+    const commentBody = {
+        userId: req.userData.id,
+        comment
+    }
+
+    try {
+        const recipe = await Recipe.findById(req.params.id);
+
+        if (!recipe){
+            //recipe do not exist
+            res.status(404).json('Recipe do not exist');
+        } else {
+            //Add comment to list of comments
+            await recipe.updateOne({
+                $push: {comments: commentBody},
+                $inc: {commentsCount: 1}
+            });
+            res.status(200).json('Comment submitted');
+        }
+    } catch (err) {
+        //unknown error
+        res.status(500).json('Error: ' + err);
+    }
+})
+
+//Get comments of a recipe
+router.route('/comments/:id').get(checkObjID, async (req, res) => {
+    const { page = 1, limit = 10 } = req.query;
+    
+    try {
+        const recipe = await Recipe
+            .findById(req.params.id)
+            .select({comments: 1})
+
+        if (!recipe){
+            //recipe do not exist
+            res.status(404).json('Recipe do not exist');
+        } else {
+            //Retrieve recipes
+            const comments = recipe;
+            res.status(200).json(comments);
+        }
+    } catch (err) {
+        //unknown error
+        res.status(500).json('Error: ' + err);
+    }
+})
 
 module.exports = router;

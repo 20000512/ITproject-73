@@ -237,6 +237,10 @@ router.route('/delete').put(checkAuth, async (req, res) => {
         await Recipe.updateMany(   
             {$pull: { likes: req.userData.id}}
         );
+        // Remove user comment records
+        await Recipe.updateMany(
+            {$pull: {comments: {userId: req.userData.id}}}
+        );
         // Delete user
         await User.findByIdAndDelete(req.userData.id);
         
