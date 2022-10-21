@@ -16,9 +16,7 @@ const Home = () => {
   const [resultArray, setResultArray] = useState([]);
   useEffect(() => {
     const expensesListResp = async () => {
-      await axios.get(host + '/users/post',{headers: {
-        'authorization': 'Bearer ' + localStorage.getItem("username") //the token is a variable which holds the token
-      }})
+      await axios.get(host + '/recipes/hot')
       .then(
         response => setResultArray(response.data))
     }
