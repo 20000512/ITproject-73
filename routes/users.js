@@ -1,30 +1,28 @@
 const router = require('express').Router();
 const bcrypt  = require('bcryptjs');
 const jwt = require('jsonwebtoken');
-const crypto  = require('crypto');
 //check authentication through JWT
 const checkAuth = require('../middleware/check_auth');
 //check format of object ID
 const checkObjID = require('../middleware/check_obj_id');
 let User = require('../models/user.model');
 let Recipe = require('../models/recipe.model');
-JWT_SECRET = 'asdasdasdasdsdf+659+523ewrfgarf6r5faw+f+-**/-/-*/*5*/3-*5/3-*5/266345^&*(^%&UJHUH';
 
-//get all users
+//get all users (For convenience only, remove before handover)
 router.route('/').get((req, res) => {
- User.find()
+    User.find()
         .then(users => res.json(users))
         .catch(err => res.status(400).json('Error: ' + err));
 });
 
-//delete all users
+//delete all users (For convenience only, remove before handover)
 router.route('/').delete((req, res) => {
     User.remove({})
-        .then(() => console.log('All users removed'))
-        .catch(err => console.log(err));
+        .then(() => res.json('All users removed'))
+        .catch(err => res.status(400).json('Error: ' + err));
 })
 
-//get posted recipes, sorted by createdAt descending
+//get published recipes, sorted by createdAt descending
 router.route('/post').get(checkAuth, async (req, res) => {
     const { page = 1, limit = 10 } = req.query;
 
@@ -35,7 +33,7 @@ router.route('/post').get(checkAuth, async (req, res) => {
             state: "published"
         };
         
-        // Get recipes sorted by createdAt descending
+        // Get published recipes sorted by createdAt descending
         const query = await Recipe.find(filter)
             .sort({createdAt: -1})
             .skip((page - 1) * limit)
@@ -68,7 +66,7 @@ router.route('/draft').get(checkAuth, async (req, res) => {
             state: "draft"
         };
         
-        // Get recipes sorted by createdAt descending
+        // Get draft recipes sorted by createdAt descending
         const query = await Recipe.find(filter)
             .sort({createdAt: -1})
             .skip((page - 1) * limit)
@@ -101,7 +99,7 @@ router.route('/like').get(checkAuth, async (req, res) => {
             state: "published"
         };
         
-        // Get recipes sorted by createdAt descending
+        // Get liked recipes sorted by createdAt descending
         const query = await Recipe.find(filter)
             .sort({createdAt: -1})
             .skip((page - 1) * limit)
@@ -160,6 +158,7 @@ router.route('/signup').post(async (req, res) => {
 router.post("/login", async (req, res) => {
     try {
         const {email,password} = req.body;
+        //email is case insensitive
         const user = await User.findOne({email: email.toLowerCase()});
 
         if(!user || !await bcrypt.compare(password, user.password)){
@@ -169,8 +168,9 @@ router.post("/login", async (req, res) => {
         else {
             //login successful, create JWT token
             const currentLoginTime = Date.now();
-            const token = jwt.sign({id: user._id, loginTime: currentLoginTime},JWT_SECRET);
+            const token = jwt.sign({id: user._id, loginTime: currentLoginTime}, process.env.JWT_SECRET);
 
+            //Add current login time to prevent concurrent logins
             await user.updateOne({$set: {currentLoginTime: currentLoginTime}});
 
             res.status(200).json({message: 'Login successful', token: token});
@@ -181,7 +181,7 @@ router.post("/login", async (req, res) => {
     }
 })
 
-//update user profile
+//update user profile image
 router.route('/update').put(checkAuth, async (req, res) => {
     // If no field, replace with empty
     const profilePicture = req.body.profilePicture ? req.body.profilePicture : "";
@@ -190,15 +190,15 @@ router.route('/update').put(checkAuth, async (req, res) => {
         const user = await User.findById(req.userData.id);
         await user.updateOne({$set: {profilePicture: profilePicture}});
 
-        // User profile updated
-        res.status(200).json('user updated');
+        // User profile image updated
+        res.status(200).json('User profile image updated');
     } catch(err) {
         //unknown error
         res.status(500).json('Error: ' + err);
     }
 });
 
-//delete user by id,his recipes and likes
+//delete user by id, also remove his recipes and likes history
 router.route('/delete').put(checkAuth, async (req, res) => {
     try {
         // Delete recipes authored by this user

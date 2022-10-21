@@ -4,35 +4,15 @@ const checkAuth = require('../middleware/check_auth');
 //check format of object ID
 const checkObjID = require('../middleware/check_obj_id');
 let Recipe = require('../models/recipe.model');
-const multer = require('multer');
-//uploads
-const storage = multer.diskStorage({
-    //destination for files
-    destination: function (request, file, callback) {
-      callback(null, './uploads/images');
-    },
-  
-    //add back the extension
-    filename: function (request, file, callback) {
-      callback(null, Date.now() + file.originalname);
-    },
-  });
-//upload parameters for multer
-  const upload = multer({
-    storage: storage,
-    limits: {
-      fieldSize: 1024 * 1024 * 3,
-    },
-  });
-  
-//get all recipes
+
+//get all recipes (For convenience only, remove before handover)
 router.route('/').get((req, res) => {
     Recipe.find()
         .then(recipes => res.json(recipes))
         .catch(err => res.status(400).json('Error: ' + err));
 })
 
-//delete all recipes
+//delete all recipes (For convenience only, remove before handover)
 router.route('/').delete((req, res) => {
     Recipe.remove({})
         .then(() => console.log('All recipes removed'))
@@ -41,14 +21,23 @@ router.route('/').delete((req, res) => {
 
 //create a new recipe
 router.route('/add').post(checkAuth, (req, res) => {
-    //include userID to attribute recipe author
+    //parse JSON for valid keys value pairs
+    const {cover = "", title = "", description = "", content = "", state = ""} = req.body;
+    
+    //combine valid inputs with userID to form a recipe body
     const newBody = {
         userId: req.userData.id,
-        ...req.body
+        cover,
+        title,
+        description,
+        content,
+        state
     }
 
+    //create new recipe
     const newRecipe = new Recipe(newBody);
     
+    //save new recipe
     newRecipe.save()
         .then(() => res.status(201).json('Recipe added'))
         .catch(err => res.status(500).json('Error: ' + err));
@@ -62,7 +51,7 @@ router.route('/hot').get(async (req, res) => {
         // Set filter for published recipes
         const filter = {state: "published"};
         
-        // Get recipes sorted by likes descending
+        // Get published recipes sorted by likes descending
         const query = await Recipe.find(filter)
             .sort({likesCount: -1})
             .limit(limit * 1)
@@ -88,7 +77,7 @@ router.route('/hot').get(async (req, res) => {
 router.route('/:id').get(checkObjID, (req, res) => {
     Recipe.findById(req.params.id)
         .then(recipes => res.json(recipes))
-        .catch(err => res.status(400).json('Error: ' + err));
+        .catch(err => res.status(500).json('Error: ' + err));
 })
 
 //delete recipe by ID
@@ -115,6 +104,17 @@ router.route('/:id').delete(checkAuth, checkObjID, async (req, res) => {
 
 //update a recipe
 router.route('/update/:id').put(checkAuth, checkObjID, async (req, res) => {
+    //parse JSON for valid keys value pairs
+    const {cover = "", title = "", description = "", content = "", state = ""} = req.body;
+    //form updated recipe body
+    const updatedRecipe = {
+        cover,
+        title, 
+        description,
+        content,
+        state
+    }
+
     try {
         const recipe = await Recipe.findById(req.params.id);
         
@@ -123,7 +123,7 @@ router.route('/update/:id').put(checkAuth, checkObjID, async (req, res) => {
             res.status(404).json('Recipe do not exist');
         } else if (recipe.userId === req.userData.id){
             //user is the author of the recipe
-            await recipe.updateOne({$set:req.body});
+            await recipe.updateOne({$set: updatedRecipe});
             await recipe.save()
             res.status(200).json('Recipe updated');
         } else {
