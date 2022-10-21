@@ -2,23 +2,18 @@ const mongoose = require('mongoose');
 const Schema = mongoose.Schema;
 
 const recipeSchema = new Schema({
-    // ID of the author
     userId: {
         type: String,
-        required: true
+        required: true,
     },
-    cover: {type: String},
+    image:{type: String},
+    likes:{type: Array, default:[]},
+    comments:{type: Array, default:[]},
     title: {type: String, required: true},
-    description: {type: String},
-    content: {type: String},
-
-    likes: {type: [String], default: []},
-    likesCount: {type: Number, default: 0},
-    comments: {type: [String], default: []},
-    commentsCount: {type: Number, default: 0},
+    description:{type: String, max:1000},
+    recipeText:{type: String},
     //change to enum? https://stackoverflow.com/questions/29299477/how-to-create-and-use-enum-in-mongoose
-    // State is either "published" or "draft"
-    state: {type: String, required: true}
+    state:{type: String, required: true},
 }, {
     timestamps: true,
 });

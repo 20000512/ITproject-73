@@ -4,7 +4,7 @@ import { Box, Typography, Modal, TextField, Stack, Button } from "@mui/material"
 import PageWrapper from "../../components/pagewrapper";
 import NavBarWrapper from "../../components/navbarwrapper";
 import Navpagewrapper from "../../components/navpagewrapper";
-import { useState, useEffect } from "react";
+import { useState } from "react";
 import BottomNavigation from "@mui/material/BottomNavigation";
 import BottomNavigationAction from "@mui/material/BottomNavigationAction";
 import Paper from "@mui/material/Paper";
@@ -15,9 +15,6 @@ import IosShareOutlinedIcon from "@mui/icons-material/IosShareOutlined";
 import ArrowBackIosIcon from "@mui/icons-material/ArrowBackIos";
 import { useNavigate } from "react-router-dom";
 import HighlightOffIcon from "@mui/icons-material/HighlightOff";
-import axios from 'axios';
-import {Route, Link, Routes, useParams} from 'react-router-dom';
-
 
 const style = {
   position: "absolute",
@@ -34,42 +31,32 @@ const style = {
 
 const Home = () => {
   const navigate = useNavigate();
-  const params = useParams(); //'634fdf39f48984c37b7a40b0' //String
-  console.log(params);
 
-  const [resultArray, setResultArray] = useState([]);
-  useEffect(() => {
-    const expensesListResp = async () => {
-      await axios.get('http://localhost:5003/users/post',{headers: {
-        'authorization': 'Bearer ' + localStorage.getItem("username") //the token is a variable which holds the token
-      }})
-      .then(
-        response => setResultArray(response.data))
-    }
-    expensesListResp();
-  }, []);
-  console.log(resultArray);
-  const arrayLength = (resultArray.data?.length);
-
-  
-  var postData = [];
-  for (var i = 0; i < arrayLength; i++){
-    if(resultArray.data?.[i]._id == params.id){
-      console.log("equal");
-      postData[0] = ({
-        id: resultArray.data?.[i]._id,
-        cover: resultArray.data?.[i].cover,
-        title: resultArray.data?.[i].title,
-        description: resultArray.data?.[i].description,
+  const [data, setData] = useState({
+    id: 1,
+    cover: oneImg,
+    avatar: avatarImg,
+    author: "Tonny",
+    title: "Food Title Food Title Food Title",
+    description:
+      "Food description Food description Food description Food description Food description Food description Food description Food description Food description Food description Food description Food description",
+    content:
+      "<h5>this is richtext</h5><p>Food content Food content Food content Food content Food content Food content Food content Food content Food content Food content Food content Food content Food content Food content Food content Food content Food content Food content Food content Food content Food content Food content Food description Food description Food description.</p><h5>this is richtext</h5><p>Food content Food content Food content Food content Food content Food content Food content Food content Food content Food content Food content Food content Food content Food content Food content Food content Food content Food content Food content Food content Food content Food content Food description Food description Food description.</p><h5>this is richtext</h5><p>Food content Food content Food content Food content Food content Food content Food content Food content Food content Food content Food content Food content Food content Food content Food content Food content Food content Food content Food content Food content Food content Food content Food description Food description Food description.</p><h5>this is richtext</h5><p>Food content Food content Food content Food content Food content Food content Food content Food content Food content Food content Food content Food content Food content Food content Food content Food content Food content Food content Food content Food content Food content Food content Food description Food description Food description.</p><h5>this is richtext</h5><p>Food content Food content Food content Food content Food content Food content Food content Food content Food content Food content Food content Food content Food content Food content Food content Food content Food content Food content Food content Food content Food content Food content Food description Food description Food description.</p>",
+    comment: [
+      {
+        userid: 1,
         avatar: avatarImg,
-        content: resultArray.data?.[i].content,
-        comment: resultArray.data?.[i].comment
-      })
-    }
-  }
-  console.log(postData);
-  const data = postData[0];
-  console.log(data);
+        username: "Tonny",
+        content: "Food commnents",
+      },
+      {
+        userid: 2,
+        avatar: avatarImg,
+        username: "Tonny",
+        content: "Food commnents",
+      },
+    ],
+  });
 
   const [like, setLike] = useState(false);
   const [share, setShare] = useState(false);
@@ -103,7 +90,10 @@ const Home = () => {
               sx={{ cursor: "pointer" }}
               onClick={() => navigate(-1)}
             />
-            
+            <img
+              style={{ width: "40px", height: "40px", borderRadius: "50%" }}
+              src={data.avatar}
+            />
             <Typography sx={{ ml: "16px" }}>{data.author}</Typography>
           </Box>
           <Box sx={{ mr: "30px" }}>
@@ -139,7 +129,30 @@ const Home = () => {
                 Comments
               </Typography>
               <Box>
-                
+                {data.comment.map((e, index) => (
+                  <Stack
+                    key={index}
+                    direction="row"
+                    alignItems="cneter"
+                    sx={{ my: "26px" }}
+                  >
+                    <Stack alignItems="center">
+                      <img
+                        style={{
+                          width: "50px",
+                          height: "50px",
+                          borderRadius: "50%",
+                        }}
+                        src={e.avatar}
+                        alt=""
+                      />
+                      <Typography variant="caption">{e.username}</Typography>
+                    </Stack>
+                    <Typography sx={{ ml: "20px", mt: "10px" }}>
+                      {e.content}
+                    </Typography>
+                  </Stack>
+                ))}
               </Box>
             </Box>
           </Box>

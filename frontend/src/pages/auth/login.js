@@ -7,10 +7,6 @@ import { useNavigate } from 'react-router-dom';
 import PageWrapper from '../../components/pagewrapper';
 import toast from 'react-hot-toast';
 import axios from 'axios';
-import Snackbar from '@mui/material/Snackbar';
-import IconButton from '@mui/material/IconButton';
-import CloseIcon from '@mui/icons-material/Close';
-
 const Login = () => {
   const navigate = useNavigate();
   const [username, setUsername] = useState('');
@@ -23,16 +19,14 @@ const Login = () => {
       email : username,
       password : password
     }
-    console.log(user);
     axios.post('http://localhost:5003/users/login',user)
       .then(res => {
         console.log(res.data)
-        localStorage.setItem('username', (res.data.token))
+        localStorage.setItem('username', JSON.stringify(res.data.token))
         navigate('/')
         })
       .catch((error) => { console.error(error) });//login or password worng
   };
-  
   return (
     <PageWrapper>
       <Box sx={{

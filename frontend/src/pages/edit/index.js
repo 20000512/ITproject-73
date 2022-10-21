@@ -1,3 +1,4 @@
+import oneImg from "../../assets/1.jpg";
 import avatarImg from "../../assets/avatar.jpg";
 import { Box, Typography, Modal, TextField, Stack, Button } from "@mui/material";
 import PageWrapper from "../../components/pagewrapper";
@@ -14,11 +15,6 @@ import { useNavigate, useSearchParams } from "react-router-dom";
 import ReactQuill from "react-quill";
 import "react-quill/dist/quill.snow.css";
 import "react-quill/dist/quill.bubble.css";
-import React from "react";
-import axios from 'axios';
-import AddPhotoAlternateIcon from '@mui/icons-material/AddPhotoAlternate';
-import toast from 'react-hot-toast';
-
 
 const modules = {
   toolbar: [
@@ -72,70 +68,39 @@ const Edit = () => {
   const [title, setTitle] = useState('');
   const [description, setDescription] = useState('');
   const [content, setContent] = useState('');
-  const [avatar, setAvatar] = useState(avatarImg);
-
-  const handleChooseImg = (e) => {
-    e.preventDefault();
-    const input = document.createElement('input');
-
-    input.type = 'file';
-    input.accept = '.jpg, .jpeg, .png';
-    input.click();
-    input.onchange = async () => {
-      try {
-        const reader = new FileReader();
-        reader.addEventListener('load', () => {
-          setAvatar(reader.result.toString() || '')
-          const url = reader.result
-          localStorage.setItem("image",url);
-        });
-        reader.readAsDataURL(input.files[0]);
-      } catch (error) {
-        toast.error('Upload error');
-      }
-      
-    };
-  }
 
   const handleSave = () => {
-    const recipe = {
-      title:title,
-      description:description,
-      cover:localStorage.getItem("image"),
-      content:content,
-      state:"draft"
+    const data = JSON.parse(localStorage.getItem('draft'));
+    if (data) {
+      if (type === 'edit') {
+        const index = localStorage.getItem('draftIndex');
+        data[index] = {
+          cover,
+          title,
+          description,
+          content
+        }
+      } else {
+        data.push({
+          cover,
+          title,
+          description,
+          content
+        });
       }
-    axios.post('http://localhost:5003/recipes/add',recipe,{
-      headers: {
-        'authorization': 'Bearer ' + localStorage.getItem("username") //the token is a variable which holds the token
-      }})
-    .then(res => {
-      console.log(res.data)
-      navigate('/profile');
-      })
-    .catch((error) => { console.error(error) });//login or password worng
- 
+      localStorage.setItem('draft', JSON.stringify(data));
 
-  };
-  
-  const handleClick = () => {
-    const recipe = {
-      title:title,
-      description:description,
-      cover:localStorage.getItem("image"),
-      content:content,
-      state:"published"
-      }
-    axios.post('http://localhost:5003/recipes/add',recipe,{
-      headers: {
-        'authorization': 'Bearer ' + localStorage.getItem("username") //the token is a variable which holds the token
-      }})
-    .then(res => {
-      console.log(res.data)
-      navigate('/')
-      })
-    .catch((error) => { console.error(error) });//login or password worng
-  };
+    } else {
+      localStorage.setItem('draft', JSON.stringify([{
+        cover,
+        title,
+        description,
+        content
+      }]));
+    }
+    navigate('/profile');
+  }
+
   const handleEdit = (content, delta, source, editor) => {
     setContent(editor.getHTML())
   }
@@ -152,7 +117,6 @@ const Edit = () => {
       }
     }
   }, []);
-
 
   return (
     <PageWrapper>
@@ -194,19 +158,21 @@ const Edit = () => {
                   variant="outlined"
                 />
               </Box>
-              
               <Box sx={{
-                display: 'flex', justifyContent: 'start', marginTop: '20px', width: '80'
+                display: 'flex', justifyContent: 'center', marginTop: '20px'
               }}>
-              <AddPhotoAlternateIcon 
-                onClick={handleChooseImg}
+                <TextField
+                  sx={{ width: '100%' }}
+                  id="outlined-name"
+                  label="Cover url"
+                  value={cover}
+                  onChange={(e) => setCover(e.target.value)}
+                  margin="normal"
+                  variant="outlined"
                 />
               </Box>
-    
-
-
               <Box sx={{
-                display: 'flex', justifyContent: 'center', marginTop: '20px', position: 'relative'
+                display: 'flex', justifyContent: 'center', marginTop: '20px'
               }}>
                 <TextField
                   sx={{ width: '100%' }}
@@ -215,22 +181,21 @@ const Edit = () => {
                   rows={4}
                   variant="filled"
                   value={description}
-                  margin="normal"
                   onChange={(e) => setDescription(e.target.value)}
                 />
               </Box>
 
               <Box sx={{
-                display: 'flex', justifyContent: 'center', marginTop: '20px', paddingBottom: "80px", position: 'relative'
+                marginTop: '20px'
               }}>
-                <TextField
-                  sx={{ width: '100%' }}
-                  label="Content"
-                  multiline
-                  rows={15}
-                  variant="filled"
-                  value={content}
-                  onChange={(e) => setContent(e.target.value)}
+                <div>Content:</div>
+                <ReactQuill
+                  style={{ width: '100%', marginTop: '10px' }}
+                  theme="snow"
+                  modules={modules}
+                  formats={formats}
+                  onChange={handleEdit}
+                  value={content || ""}
                 />
               </Box>
             </Box>
@@ -242,7 +207,7 @@ const Edit = () => {
         >
           <BottomNavigation showLabels>
             <BottomNavigationAction
-              onClick={handleClick}
+              onClick={() => navigate('/home')}
               label="Publish"
               icon={<SaveIcon />}
             />
@@ -257,6 +222,5 @@ const Edit = () => {
     </PageWrapper>
   );
 };
-
 
 export default Edit;

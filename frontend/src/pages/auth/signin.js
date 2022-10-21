@@ -26,9 +26,10 @@ const Signin = () => {
       email : email,
       password : password
     }
-    axios.post('http://localhost:5003/users/signup',user).then(res => console.log(res.data)).catch((error) => { console.error(error) });
+    axios.post('http://localhost:5003/users/signup',user)
+      .then(res => console.log(res.data))
+      .catch((error) => { console.error(error) });
     navigate('/login');
-    
   };
   return (
     <PageWrapper>
