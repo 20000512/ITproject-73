@@ -32,12 +32,29 @@ const style = {
   boxShadow: 24,
   p: 4,
 };
-
+//{List:[]} update list = [] setxxx(list) setxxx(List:list)
 const Home = () => {
   const navigate = useNavigate();
   const params = useParams(); //'634fdf39f48984c37b7a40b0' //String
   console.log(params)
   const [resultArray, setResultArray] = useState([]);
+  
+  
+  
+  
+  useEffect(() => {
+    const expensesListResp = async () => {
+      await axios.get(host + '/recipes/'+ params,{headers: {
+        'authorization': 'Bearer ' + localStorage.getItem("username") //the token is a variable which holds the token
+      }})
+      .then(
+          response => setResultArray(response.data),
+          console.log(resultArray))
+          
+    } 
+    expensesListResp();
+  }, []);
+  
   const [data, setData] = useState({
     id: 1,
     cover: oneImg,
@@ -63,24 +80,9 @@ const Home = () => {
       },
     ],
   });
-  
-  
-  useEffect(() => {
-    const expensesListResp = async () => {
-      axios.get(host + '/recipes/'+ params,{headers: {
-        'authorization': 'Bearer ' + localStorage.getItem("username") //the token is a variable which holds the token
-      }})
-      .then(
-        response => {console.log("lll");
-        setResultArray(response.data)})
-      
-  }
-    expensesListResp();
-  }, []);
- 
-  const arrayLength = (resultArray.data?.length);
+  //const arrayLength = (resultArray.data?.length);
   //console.log(arrayLength);
-  
+  /*
   if(resultArray){
     setData(previousState => {
       return { ...previousState,
@@ -91,7 +93,7 @@ const Home = () => {
       
       }
     })}
-  
+  */
   
 /*
   var postData = [];

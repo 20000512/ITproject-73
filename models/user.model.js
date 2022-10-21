@@ -21,10 +21,14 @@ const userSchema = new Schema({
         type: String,
         required:true
     },
-    
     profilePicture:{
         type:String,
         default:""
+    },
+
+    // Store current session hashed token, prevent concurrent login
+    currentLoginTime: {
+        type: Number,
     }
 }, {
     timestamps: true,

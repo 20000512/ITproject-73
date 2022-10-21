@@ -3,13 +3,14 @@ import PageWrapper from '../components/pagewrapper';
 import NavBarWrapper from '../components/navbarwrapper';
 import Navpagewrapper from '../components/navpagewrapper';
 import { useState } from 'react';
+import { useNavigate } from 'react-router-dom';
 
 const Sort = () => {
-
+  const navigate = useNavigate();
   const [data, setData] = useState([{
     id: 1,
     type: 'main',
-    list: ['food', 'food', 'food', 'food', 'food', 'food']
+    list: ['main', 'food', 'food', 'food', 'food', 'food']
   }, {
     id: 2,
     type: 'other',
@@ -41,9 +42,12 @@ const Sort = () => {
         aria-label="Vertical tabs example"
         sx={{ borderRight: 1, borderColor: 'divider' }}
       >
-        {data.map((e, index) => <Tab key={index} label={e.type} sx={{
-          backgroundColor: active.id === e.id ? '#f57c18' : 'transparent'
-        }} onClick={() => setActive(e)} />)}
+        {data.map((e, index) => <Tab 
+          onClick={() => navigate('/search/' + index)}
+          key={index} 
+          label={e.type} 
+          sx={{backgroundColor: active.id === e.id ? '#f57c18' : 'transparent'}}
+          />)}
       </Tabs>
       <Box sx={{ display: 'flex'}}>{active.list.map((ele, index) => <Typography sx={{ px: '16px', py: '8px'}} key={index}>{ele}</Typography>)}</Box>
       </Box>

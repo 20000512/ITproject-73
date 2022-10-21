@@ -1,5 +1,6 @@
 import { Box, Button, TextField, Typography, InputAdornment } from '@mui/material';
 import { useState } from 'react';
+import {host} from '../host';
 import VpnKeyOutlinedIcon from '@mui/icons-material/VpnKeyOutlined';
 import EmailOutlinedIcon from '@mui/icons-material/EmailOutlined';
 import AccountCircleOutlinedIcon from '@mui/icons-material/AccountCircleOutlined';
@@ -26,10 +27,9 @@ const Signin = () => {
       email : email,
       password : password
     }
-    axios.post('http://localhost:5003/users/signup',user)
-      .then(res => console.log(res.data))
-      .catch((error) => { console.error(error) });
+    axios.post(host + '/users/signup', user).then(res => console.log(res.data)).catch((error) => { console.error(error) });
     navigate('/login');
+    
   };
   return (
     <PageWrapper>

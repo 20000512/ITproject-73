@@ -15,43 +15,89 @@ import FavoriteBorderIcon from "@mui/icons-material/FavoriteBorder";
 import PostAddOutlinedIcon from "@mui/icons-material/PostAddOutlined";
 import SaveAsOutlinedIcon from "@mui/icons-material/SaveAsOutlined";
 import RuleFolderOutlinedIcon from '@mui/icons-material/RuleFolderOutlined';
+import axios from 'axios';
+import React, { useRef } from 'react';
+import toast from 'react-hot-toast';
+import {host} from '../host';
 
 const Profile = () => {
+  
   const navigate = useNavigate();
+  
+  const [resultArray, setResultArray] = useState([]);
+  const [resultArraydraft, setResultArraydraft] = useState([]);
+  const [resultArraylikes, setResultArraylikes] = useState([]);
+  const [resultuser, setuser] = useState([]);
+  useEffect(() => {
+      const expensesListResp = async () => {
+        await axios.get(host + '/users/post',{headers: {
+          'authorization': 'Bearer ' + localStorage.getItem("username") //the token is a variable which holds the token
+        }})
+        .then(
+          response => setResultArray(response.data))
+      }
+      expensesListResp();
+    }, []);
+  const arrayLength = (resultArray.data?.length)
+  console.log(resultArray)
+  useEffect(() => {
+    const expensesListRespdraft = async () => {
+      await axios.get(host + '/users/draft',{headers: {
+        'authorization': 'Bearer ' + localStorage.getItem("username") //the token is a variable which holds the token
+      }})
+      .then(
+        response => setResultArraydraft(response.data))
+    }
+    expensesListRespdraft();
+  }, []);
 
-  const [data, setData] = useState([
-    {
-      id: 1,
-      cover: oneImg,
-      title: "Food Title Food Title Food Title",
-      description:
-        "Food description Food description Food description Food description Food description Food description Food description Food description Food description Food description Food description Food description",
-    },
-    {
-      id: 2,
-      cover: oneImg,
-      title: "Food Title Food Title Food Title",
-      description:
-        "Food description Food description Food description Food description Food description Food description Food description Food description Food description Food description Food description Food description",
-    },
-    {
-      id: 3,
-      cover: oneImg,
-      title: "Food Title Food Title Food Title",
-      description:
-        "Food description Food description Food description Food description Food description Food description Food description Food description Food description Food description Food description Food description",
-    },
-  ]);
+  console.log(resultArraydraft);
+  const arrayLengthdraft = (resultArraydraft.data?.length)
+  console.log(arrayLengthdraft); //2
+
+ 
+  useEffect(() => {
+    const expensesuser = async () => {
+      await axios.get(host + '/users/profile',{headers: {
+        'authorization': 'Bearer ' + localStorage.getItem("username") //the token is a variable which holds the token
+      }})
+      .then(
+        response => setuser(response.data))
+    }
+    expensesuser();
+  }, []);
+
+  
+  useEffect(() => {
+    const expensesListResplikes = async () => {
+      await axios.get(host + '/users/like',{headers: {
+        'authorization': 'Bearer ' + localStorage.getItem("username") //the token is a variable which holds the token
+      }})
+      .then(
+        response => setResultArraylikes(response.data))
+    }
+    expensesListResplikes();
+  }, []);
+  console.log(resultArraylikes);
+  const arrayLengthlikes = (resultArraydraft.data?.length)
+  console.log(arrayLengthlikes); //3
+  var postData = [];
+  for (var i = 0; i < arrayLength; i++){
+    postData[i] = ({
+      id: resultArray.data?.[i]._id,
+      cover: resultArray.data?.[i].cover,
+      title: resultArray.data?.[i].title,
+      description: resultArray.data?.[i].description,
+    })
+  }
+  
+  const data = postData;
+  console.log(data);
+
+  
   const [draft, setDraft] = useState([]);
-  const [like, setLike] = useState([
-    {
-      id: 1,
-      cover: oneImg,
-      title: "Food Title Food Title Food Title",
-      description:
-        "Food description Food description Food description Food description Food description Food description Food description Food description Food description Food description Food description Food description",
-    },
-  ]);
+  const [like, setLike] = useState([]);
+  
   const [tab, setTab] = useState(1);
 
   const handleDraft = (e, index) => {
@@ -65,6 +111,26 @@ const Profile = () => {
       setDraft(data);
     }
   }, []);
+
+  const [avatar, setAvatar] = useState(avatarImg);
+  const handleChooseImg = (e) => {
+    e.preventDefault();
+    const input = document.createElement('input');
+    input.type = 'file';
+    input.accept = '.jpg, .jpeg, .png';
+    input.click();
+    input.onchange = async () => {
+      try {
+        const reader = new FileReader();
+        reader.addEventListener('load', () => {
+          setAvatar(reader.result.toString() || '')
+        });
+        reader.readAsDataURL(input.files[0]);
+      } catch (error) {
+        toast.error('Upload error');
+      }
+    };
+  }
 
   const renderItem = () => {
     switch (tab) {
@@ -165,11 +231,7 @@ const Profile = () => {
             }}
           >
             <Box sx={{ flex: 1, display: "flex", alignItems: "center" }}>
-              <img
-                src={avatarImg}
-                alt=""
-                style={{ width: "150px", height: "150px", borderRadius: "50%" }}
-              />
+            <img onClick={handleChooseImg} src={avatar} alt="" style={{ width: "140px", height: "140px", borderRadius: "50%" }} />
               <Typography sx={{ ml: "24px" }} variant="h4">
                 Sam
               </Typography>
