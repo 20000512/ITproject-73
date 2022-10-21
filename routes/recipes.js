@@ -50,9 +50,19 @@ router.route('/hot').get(async (req, res) => {
     try {
         // Set filter for published recipes
         const filter = {state: "published"};
+
+        // Set fields that will be returned
+        const fields = {
+            cover: 1,
+            title: 1,
+            description: 1,
+            content: 1,
+            likesCount: 1,
+        };
         
         // Get published recipes sorted by likes descending
         const query = await Recipe.find(filter)
+            .select(fields)
             .sort({likesCount: -1})
             .limit(limit * 1)
             .skip((page - 1) * limit);
@@ -74,10 +84,33 @@ router.route('/hot').get(async (req, res) => {
 })
 
 //get recipe by ID
-router.route('/:id').get(checkObjID, (req, res) => {
-    Recipe.findById(req.params.id)
-        .then(recipes => res.json(recipes))
-        .catch(err => res.status(500).json('Error: ' + err));
+router.route('/:id').get(checkObjID, async (req, res) => {
+    try {
+        //set fields that will be returned
+        const fields = {
+            userId: 1,
+            cover: 1,
+            title: 1,
+            description: 1,
+            content: 1,
+            likesCount: 1,
+        };
+        
+        //get recipe along with author information
+        const recipe = await Recipe.findById(req.params.id)
+            .populate('userId', 'username profilePicture')    
+            .select(fields)    
+             
+        if (!recipe) {
+            //recipe do not exist
+            res.status(404).json('Recipe do not exist');
+        } else {
+            res.status(200).json({data: recipe});
+        }
+    } catch (err) {
+        //unknown error
+        res.status(500).json('Error: ' + err);
+    }
 })
 
 //delete recipe by ID
@@ -182,8 +215,18 @@ router.route('/search/:keyword').get( async (req, res) => {
             ]
         };
 
+        // Set fields that will be returned
+        const fields = {
+            cover: 1,
+            title: 1,
+            description: 1,
+            content: 1,
+            likesCount: 1,
+        };
+
         // Get filtered query results with page and limit specified
         const query = await Recipe.find(filter)
+            .select(fields)
             .skip((page - 1) * limit)
             .limit(limit * 1);
 

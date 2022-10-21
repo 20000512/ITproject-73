@@ -4,8 +4,9 @@ const Schema = mongoose.Schema;
 const recipeSchema = new Schema({
     // ID of the author
     userId: {
-        type: String,
-        required: true
+        type: Schema.ObjectId,
+        required: true,
+        ref: 'User'
     },
     cover: {type: String},
     title: {type: String, required: true},

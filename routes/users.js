@@ -32,10 +32,20 @@ router.route('/post').get(checkAuth, async (req, res) => {
             userId: req.userData.id,
             state: "published"
         };
-        
+
+        // Set fields that will be returned
+        const fields = {
+            cover: 1,
+            title: 1,
+            description: 1,
+            content: 1,
+            likesCount: 1,
+        };
+
         // Get published recipes sorted by createdAt descending
         const query = await Recipe.find(filter)
             .sort({createdAt: -1})
+            .select(fields)
             .skip((page - 1) * limit)
             .limit(limit * 1);
 
@@ -66,9 +76,19 @@ router.route('/draft').get(checkAuth, async (req, res) => {
             state: "draft"
         };
         
+        // Set fields that will be returned
+        const fields = {
+            cover: 1,
+            title: 1,
+            description: 1,
+            content: 1,
+            likesCount: 1,
+        };
+
         // Get draft recipes sorted by createdAt descending
         const query = await Recipe.find(filter)
             .sort({createdAt: -1})
+            .select(fields)
             .skip((page - 1) * limit)
             .limit(limit * 1);
 
@@ -98,10 +118,20 @@ router.route('/like').get(checkAuth, async (req, res) => {
             likes: req.userData.id,
             state: "published"
         };
+
+        // Set fields that will be returned
+        const fields = {
+            cover: 1,
+            title: 1,
+            description: 1,
+            content: 1,
+            likesCount: 1,
+        };
         
         // Get liked recipes sorted by createdAt descending
         const query = await Recipe.find(filter)
             .sort({createdAt: -1})
+            .select(fields)
             .skip((page - 1) * limit)
             .limit(limit * 1);
 
@@ -144,7 +174,7 @@ router.route('/signup').post(async (req, res) => {
     //check if user already exists
     const oldUser = User.find({email: email});
     if ((await oldUser).length >= 1){
-        res.status(400).json('user already exists');
+        res.status(400).json('User already exists');
     } else {
         //save new user
         const newUser = new User({email, password, username});

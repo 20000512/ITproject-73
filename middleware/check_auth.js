@@ -25,7 +25,7 @@ module.exports = async (req, res, next) => {
             next();
         }
     } catch (err) {
-        // Token verification failed
-        return res.status(401).json('Auth failed');
+        // Invalid token
+        return res.status(401).json('Invalid token');
     }
 };
