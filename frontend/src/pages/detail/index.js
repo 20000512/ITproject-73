@@ -38,76 +38,21 @@ const Home = () => {
   const params = useParams(); //'634fdf39f48984c37b7a40b0' //String
   console.log(params)
   const [resultArray, setResultArray] = useState([]);
-  
+  const [data, setData] = useState({
+  });
   
   
   
   useEffect(() => {
     const expensesListResp = async () => {
-      await axios.get(host + '/recipes/'+ params,{headers: {
-        'authorization': 'Bearer ' + localStorage.getItem("username") //the token is a variable which holds the token
-      }})
-      .then(
-          response => setResultArray(response.data),
-          console.log(resultArray))
-          
+      await axios.get(host + '/recipes/'+params.id)
+      .then(response => {
+        setData(response.data.data)
+      })
     } 
     expensesListResp();
   }, []);
   
-  const [data, setData] = useState({
-    id: 1,
-    cover: oneImg,
-    avatar: avatarImg,
-    author: "Tonny",
-    title: "Food Title Food Title Food Title",
-    description:
-      "Food description Food description Food description Food description Food description Food description Food description Food description Food description Food description Food description Food description",
-    content:
-      "<h5>this is richtext</h5><p>Food content Food content Food content Food content Food content Food content Food content Food content Food content Food content Food content Food content Food content Food content Food content Food content Food content Food content Food content Food content Food content Food content Food description Food description Food description.</p><h5>this is richtext</h5><p>Food content Food content Food content Food content Food content Food content Food content Food content Food content Food content Food content Food content Food content Food content Food content Food content Food content Food content Food content Food content Food content Food content Food description Food description Food description.</p><h5>this is richtext</h5><p>Food content Food content Food content Food content Food content Food content Food content Food content Food content Food content Food content Food content Food content Food content Food content Food content Food content Food content Food content Food content Food content Food content Food description Food description Food description.</p><h5>this is richtext</h5><p>Food content Food content Food content Food content Food content Food content Food content Food content Food content Food content Food content Food content Food content Food content Food content Food content Food content Food content Food content Food content Food content Food content Food description Food description Food description.</p><h5>this is richtext</h5><p>Food content Food content Food content Food content Food content Food content Food content Food content Food content Food content Food content Food content Food content Food content Food content Food content Food content Food content Food content Food content Food content Food content Food description Food description Food description.</p>",
-    comment: [
-      {
-        userid: 1,
-        avatar: avatarImg,
-        username: "Tonny",
-        content: "Food commnents",
-      },
-      {
-        userid: 2,
-        avatar: avatarImg,
-        username: "Tonny",
-        content: "Food commnents",
-      },
-    ],
-  });
-  //const arrayLength = (resultArray.data?.length);
-  //console.log(arrayLength);
-  /*
-  if(resultArray){
-    setData(previousState => {
-      return { ...previousState,
-        cover: resultArray.data?.cover,
-        title: resultArray.data?.title,
-        description: resultArray.data?.description,
-        content: resultArray.data?.content
-      
-      }
-    })}
-  */
-  
-/*
-  var postData = [];
-  for (var i = 0; i < arrayLength; i++){
-    postData[i] = ({
-      id: resultArray.data?.[i]._id,
-      cover: resultArray.data?.[i].cover,
-      title: resultArray.data?.[i].title,
-      description: resultArray.data?.[i].description,
-    })
-  }
-  */
-  //console.log(data);
-
   
   const [like, setLike] = useState(false);
   const [share, setShare] = useState(false);
