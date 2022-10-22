@@ -17,12 +17,12 @@ import {host} from '../host';
 const Search = () => {
   const navigate = useNavigate();
 
-  const [data, setData] = useState([]);
+
 
   const [list, setList] = useState([]);
   const [show, setShow] = useState(false);
   const [keywords, setKeywords] = useState('');
-  const [resultArray, setResultArray] = useState([]);
+  const [data, setData] = useState([]);
   const handleSearch = () => {
     setList(Array.from(new Set([keywords, ...list])));
     setShow(true);
@@ -31,7 +31,16 @@ const Search = () => {
     setKeywords(e);
     handleSearch();
   }
-
+  useEffect(() => {
+    const expensesListResp = async () => {
+      await axios.get(host + '/recipes/search/' + keywords)
+      .then(response => {
+        setData(response.data.data)
+        console.log(data)
+      })
+    } 
+    expensesListResp();
+  }, [keywords]);
   return (
     <PageWrapper>
       <NavBarWrapper>
