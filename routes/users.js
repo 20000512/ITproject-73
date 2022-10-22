@@ -24,7 +24,11 @@ router.route('/').delete((req, res) => {
 
 //get published recipes, sorted by createdAt descending
 router.route('/post').get(checkAuth, async (req, res) => {
-    const { page = 1, limit = 10 } = req.query;
+    // Set up pagination parameters
+    var { page = 1, limit = 10 } = req.query;
+    // Convert pagination parameters to Number
+    page = parseInt(page, 10);
+    limit = parseInt(limit, 10);
 
     try {
         // Set filter for userId and published recipes
@@ -67,7 +71,11 @@ router.route('/post').get(checkAuth, async (req, res) => {
 
 //get draft recipes, sorted by createdAt descending
 router.route('/draft').get(checkAuth, async (req, res) => {
-    const { page = 1, limit = 10 } = req.query;
+    // Set up pagination parameters
+    var { page = 1, limit = 10 } = req.query;
+    // Convert pagination parameters to Number
+    page = parseInt(page, 10);
+    limit = parseInt(limit, 10);
 
     try {
         // Set filter for userId and draft recipes
@@ -110,7 +118,11 @@ router.route('/draft').get(checkAuth, async (req, res) => {
 
 //get liked recipes, sorted by createdAt descending
 router.route('/like').get(checkAuth, async (req, res) => {
-    const { page = 1, limit = 10 } = req.query;
+    // Set up pagination parameters
+    var { page = 1, limit = 10 } = req.query;
+    // Convert pagination parameters to Number
+    page = parseInt(page, 10);
+    limit = parseInt(limit, 10);
 
     try {
         // Set filter for userId in likes and published recipes
@@ -233,14 +245,33 @@ router.route('/delete').put(checkAuth, async (req, res) => {
     try {
         // Delete recipes authored by this user
         await Recipe.deleteMany({userId: req.userData.id});
+
         // Remove user like records
-        await Recipe.updateMany(   
-            {$pull: { likes: req.userData.id}}
+        await Recipe.updateMany(
+            {},
+            {$pull: {likes: req.userData.id}}
         );
+        // Update likesCount
+        await Recipe.updateMany(
+            {},
+            [
+               {$set: {likesCount: {$size: "$likes"}}}
+            ]
+        );
+
         // Remove user comment records
         await Recipe.updateMany(
+            {},
             {$pull: {comments: {userId: req.userData.id}}}
         );
+        // Update commentsCount
+        await Recipe.updateMany(
+            {},
+            [
+               {$set: {commentsCount: {$size: "$comments"}}}
+            ]
+        );
+
         // Delete user
         await User.findByIdAndDelete(req.userData.id);
         

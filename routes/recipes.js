@@ -45,7 +45,11 @@ router.route('/add').post(checkAuth, (req, res) => {
 
 //get hottest recipe by likes
 router.route('/hot').get(async (req, res) => {
-    const { page = 1, limit = 10 } = req.query;
+    // Set up pagination parameters
+    var { page = 1, limit = 10 } = req.query;
+    // Convert pagination parameters to Number
+    page = parseInt(page, 10);
+    limit = parseInt(limit, 10);
 
     try {
         // Set filter for published recipes
@@ -200,7 +204,11 @@ router.route('/like/:id').put(checkAuth, checkObjID, async (req, res) => {
 
 //search by typing keywords
 router.route('/search/:keyword').get( async (req, res) => {
-    const { page = 1, limit = 10 } = req.query;
+    // Set up pagination parameters
+    var { page = 1, limit = 10 } = req.query;
+    // Convert pagination parameters to Number
+    page = parseInt(page, 10);
+    limit = parseInt(limit, 10);
     
     try {
         // Set filter based on case-insensitive keyword and published recipes
@@ -270,10 +278,10 @@ router.route('/didlike/:id').get(checkAuth, checkObjID, async (req, res) => {
 router.route('/comments/:id').put(checkAuth, checkObjID, async (req, res) => {
     //parse and construct comment JSON
     const {comment = ''} = req.body;
-    const commentBody = {
+    const newComment = {
         userId: req.userData.id,
         comment
-    }
+    };
 
     try {
         const recipe = await Recipe.findById(req.params.id);
@@ -282,9 +290,9 @@ router.route('/comments/:id').put(checkAuth, checkObjID, async (req, res) => {
             //recipe do not exist
             res.status(404).json('Recipe do not exist');
         } else {
-            //Add comment to list of comments
+            //Add new comment to the front of the comment list
             await recipe.updateOne({
-                $push: {comments: commentBody},
+                $push: {comments: {$each: [newComment], $position: 0}},
                 $inc: {commentsCount: 1}
             });
             res.status(200).json('Comment submitted');
@@ -295,22 +303,50 @@ router.route('/comments/:id').put(checkAuth, checkObjID, async (req, res) => {
     }
 })
 
-//Get comments of a recipe
+//Get comments of a recipe, sorted by createdAt descending
+//(No explicit sorting required since new comment are inserted at the front...
+//...of the comments array)
 router.route('/comments/:id').get(checkObjID, async (req, res) => {
-    const { page = 1, limit = 10 } = req.query;
-    
-    try {
-        const recipe = await Recipe
-            .findById(req.params.id)
-            .select({comments: 1})
+    // Set up pagination parameters
+    var { page = 1, limit = 10 } = req.query;
+    // Convert pagination parameters to Number
+    page = parseInt(page, 10);
+    limit = parseInt(limit, 10);
 
-        if (!recipe){
+    // Set up projection for pagination and fields that will be returned
+    const projection = {
+        "comments": { 
+            $map: {
+                input: { $slice: ["$comments", (page - 1) * limit, limit] },
+                in: {
+                    userId: "$$this.userId",
+                    comment: "$$this.comment"
+                }
+            }
+        },
+        "commentsCount": 1
+    };
+
+    try {
+        // Get comments of the recipe, implicitly sorted by createdAt descending 
+        const query = await Recipe
+            .findById(req.params.id, projection)
+            .populate('comments.userId', 'username profilePicture');
+
+        if (!query){
             //recipe do not exist
             res.status(404).json('Recipe do not exist');
         } else {
-            //Retrieve recipes
-            const comments = recipe;
-            res.status(200).json(comments);
+            // Get total number of pages
+            const commentsCount = query.commentsCount;
+            const totalPage = Math.ceil(commentsCount / limit);
+            
+            // Return results
+            res.status(200).json({
+                data: query,
+                currentPage: page,
+                totalPage: totalPage
+            });
         }
     } catch (err) {
         //unknown error
