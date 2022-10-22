@@ -34,7 +34,7 @@ const Profile = () => {
           'authorization': 'Bearer ' + localStorage.getItem("username") //the token is a variable which holds the token
         }})
         .then(
-          response => setResultArray(response.data))
+          response => setResultArray(response.data.data))
       }
       expensesListResp();
     }, []);
@@ -46,7 +46,7 @@ const Profile = () => {
         'authorization': 'Bearer ' + localStorage.getItem("username") //the token is a variable which holds the token
       }})
       .then(
-        response => setResultArraydraft(response.data))
+        response => setResultArraydraft(response.data.data))
     }
     expensesListRespdraft();
   }, []);
@@ -62,7 +62,7 @@ const Profile = () => {
         'authorization': 'Bearer ' + localStorage.getItem("username") //the token is a variable which holds the token
       }})
       .then(
-        response => setuser(response.data))
+        response => setuser(response.data.data))
     }
     expensesuser();
   }, []);
@@ -74,7 +74,7 @@ const Profile = () => {
         'authorization': 'Bearer ' + localStorage.getItem("username") //the token is a variable which holds the token
       }})
       .then(
-        response => setResultArraylikes(response.data))
+        response => setResultArraylikes(response.data.data))
     }
     expensesListResplikes();
   }, []);
@@ -91,12 +91,14 @@ const Profile = () => {
     })
   }
   
-  const data = postData;
+  const data = resultArray;
+  const draft = resultArraydraft;
+  const like = resultArraylikes;
   console.log(data);
 
   
-  const [draft, setDraft] = useState([]);
-  const [like, setLike] = useState([]);
+  //const [draft, setDraft] = useState([]);
+  //const [like, setLike] = useState([]);
   
   const [tab, setTab] = useState(1);
 
@@ -104,14 +106,14 @@ const Profile = () => {
     localStorage.setItem('draftIndex', index);
     navigate('/edit?type=edit')
   }
-
+/*
   useEffect(() => {
     const data = JSON.parse(localStorage.getItem('draft'));
     if (data && data.length) {
       setDraft(data);
     }
   }, []);
-
+*/
   const [avatar, setAvatar] = useState(avatarImg);
   const handleChooseImg = (e) => {
     e.preventDefault();
