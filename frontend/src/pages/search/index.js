@@ -31,6 +31,7 @@ const Search = () => {
     setKeywords(e);
     handleSearch();
   }
+  //mounted and update when keywords has been inputed 
   useEffect(() => {
     const expensesListResp = async () => {
       await axios.get(host + '/recipes/search/' + keywords)

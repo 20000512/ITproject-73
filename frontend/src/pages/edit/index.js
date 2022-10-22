@@ -97,8 +97,26 @@ const Edit = () => {
       
     };
   }
-
+//Save the draft into the database if it is new or edit the drafted recipe
   const handleSave = () => {
+    if(type === 'new'){
+      const recipe = {
+        title:title,
+        description:description,
+        cover:localStorage.getItem("image"),
+        content:content,
+        state:"draft"
+        }
+      axios.post(host + '/recipes/add',recipe,{
+        headers: {
+          'authorization': 'Bearer ' + localStorage.getItem("username") //the token is a variable which holds the token
+        }})
+      .then(res => {
+        console.log(res.data)
+        navigate('/')
+        })
+      .catch((error) => { console.error(error) });
+  }
     const data = JSON.parse(localStorage.getItem('draft'));
     if (data) {
       if (type === 'edit') {
