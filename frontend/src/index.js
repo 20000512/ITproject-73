@@ -12,7 +12,7 @@ import { Toaster } from 'react-hot-toast';
 import Home from './pages/home';
 import Login from './pages/auth/login';
 import Search from './pages/search';
-import Sort from './pages/sort';
+import Category from './pages/category';
 import Profile from './pages/profile';
 import Signin from './pages/auth/signin';
 import Forget from './pages/auth/forget';
@@ -30,7 +30,7 @@ root.render(
         <Route path="/" element={<App />}>
           <Route index element={<Home />} />
           <Route path="/search" element={<Search />} />
-          <Route path="/sort" element={<Sort />} />
+          <Route path="/category" element={<Category />} />
           <Route path="/profile" element={<Profile />} />
         </Route>
         <Route path="edit" element={<Edit />} />
