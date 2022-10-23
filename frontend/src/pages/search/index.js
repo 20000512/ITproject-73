@@ -13,36 +13,54 @@ import SearchIcon from '@mui/icons-material/Search';
 import IconButton from '@mui/material/IconButton';
 import DeleteOutlineIcon from '@mui/icons-material/DeleteOutline';
 import axios from 'axios';
+import toast from 'react-hot-toast';
 import {host} from '../host';
+
 const Search = () => {
   const navigate = useNavigate();
 
+  // Store local search history
   const [list, setList] = useState([]);
+  // Store boolean for determining whether to show search results
   const [show, setShow] = useState(false);
   // Store search keyword
   const [keywords, setKeywords] = useState('');
+  // Store search results
   const [data, setData] = useState([]);
+  // Store search input
+  const [input, setInput] = useState('');
 
-  // Search by typing keywords and press search button
-  const handleSearch = () => {
-    setList(Array.from(new Set([keywords, ...list])));
-    setShow(true);
+  // Handler: Search by typing keywords and press search button
+  const handleSearch = async () => {
+    if (input === '') {
+      // Search input is empty, show error
+      toast.error(`Search input can't be empty!`);
+    } else {
+      // Search input not empty, proceed with search
+      setKeywords(input);
+    }
   };
 
-  // Search by clicking keywords in search history
+  // Handler: Search by clicking keywords in search history
   const handleResearch = (e) => {
     setKeywords(e);
-    handleSearch();
   };
 
-  //mounted and update when keywords has been inputed 
+  //mounted and update when keywords is updated
   useEffect(() => {
     const expensesListResp = async () => {
-      await axios.get(host + '/recipes/search/' + keywords)
-      .then(response => {
-        setData(response.data.data)
-        console.log(data)
-      })
+      if (keywords) {
+        // Keyword not empty, get search results
+        await axios.get(host + '/recipes/search/' + keywords)
+          .then(response => {
+              // Store search results
+              setData(response.data.data);
+              // Update search history
+              setList(l => Array.from(new Set([keywords, ...l])));
+              // Show search results
+              setShow(true);
+          })
+      }
     } 
     expensesListResp();
   }, [keywords]);
@@ -53,7 +71,7 @@ const Search = () => {
         <Box sx={{ width: '100%', height: '64px', display: 'flex', justifyContent: 'center', alignItems: 'center', position: 'relative' }}>
           {show ? <ArrowBackIosIcon
             sx={{ cursor: "pointer", position: "absolute", left: "30px" }}
-            onClick={() => setShow(false)}
+            onClick={() => {setShow(false);setData([]);setInput('');setKeywords('')}}
           /> : ''}
           <Typography variant='h5'>Search {show ? '/' + keywords : ''}</Typography>
         </Box>
@@ -79,7 +97,7 @@ const Search = () => {
                   sx={{ ml: 1, flex: 1 }}
                   placeholder="Search"
                   inputProps={{ 'aria-label': 'search' }}
-                  onChange={e => setKeywords(e.target.value)}
+                  onChange={e => setInput(e.target.value)}
                 />
                 <IconButton color="warning" type="button" sx={{ p: '10px', background: '#f57c18', color: 'white', '&:hover': { color: 'black' } }} aria-label="search" onClick={handleSearch}>
                   <SearchIcon />
