@@ -17,20 +17,24 @@ import {host} from '../host';
 const Search = () => {
   const navigate = useNavigate();
 
-
-
   const [list, setList] = useState([]);
   const [show, setShow] = useState(false);
+  // Store search keyword
   const [keywords, setKeywords] = useState('');
   const [data, setData] = useState([]);
+
+  // Search by typing keywords and press search button
   const handleSearch = () => {
     setList(Array.from(new Set([keywords, ...list])));
     setShow(true);
-  }
+  };
+
+  // Search by clicking keywords in search history
   const handleResearch = (e) => {
     setKeywords(e);
     handleSearch();
-  }
+  };
+
   //mounted and update when keywords has been inputed 
   useEffect(() => {
     const expensesListResp = async () => {
@@ -42,6 +46,7 @@ const Search = () => {
     } 
     expensesListResp();
   }, [keywords]);
+
   return (
     <PageWrapper>
       <NavBarWrapper>
@@ -57,9 +62,9 @@ const Search = () => {
         <Box sx={{ display: 'flex', flexDirection: 'column', alignItems: 'center', p: '30px' }}>
           {show ? <Box sx={{ width: '100%', maxWidth: '1000px' }}>
             {data.map(e => <ItemCard
-              onClick={() => navigate('/detail/' + e.id)}
+              onClick={() => navigate('/detail/' + e._id)}
               sx={{ mb: '30px' }}
-              key={e.id}
+              key={e._id}
               title={e.title}
               cover={e.cover}
               description={e.description}
