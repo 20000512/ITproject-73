@@ -125,7 +125,7 @@ router.route('/:id').delete(checkAuth, checkObjID, async (req, res) => {
         if (!recipe){
             //recipe do not exist
             res.status(404).json('Recipe do not exist');
-        } else if (recipe.userId === req.userData.id){
+        } else if (recipe.userId.equals(req.userData.id)){
             //user is the author of the recipe
             await recipe.delete();
             res.status(200).json('Recipe deleted');
@@ -158,7 +158,7 @@ router.route('/update/:id').put(checkAuth, checkObjID, async (req, res) => {
         if (!recipe){
             //recipe do not exist
             res.status(404).json('Recipe do not exist');
-        } else if (recipe.userId === req.userData.id){
+        } else if (recipe.userId.equals(req.userData.id)){
             //user is the author of the recipe
             await recipe.updateOne({$set: updatedRecipe});
             await recipe.save()

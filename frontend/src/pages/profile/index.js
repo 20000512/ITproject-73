@@ -47,9 +47,6 @@ const Profile = () => {
     expensesListResp();
   }, []);
 
-  // const arrayLength = (resultArray.data?.length)
-  // console.log(resultArray)
-
   // Fetch and store user drafted recipes
   useEffect(() => {
     const expensesListRespdraft = async () => {
@@ -63,10 +60,6 @@ const Profile = () => {
     expensesListRespdraft();
   }, []);
 
-  // console.log(resultArraydraft);
-  // const arrayLengthdraft = (resultArraydraft.data?.length)
-  // console.log(arrayLengthdraft); //2
-
   // Fetch and store user liked recipes
   useEffect(() => {
     const expensesListResplikes = async () => {
@@ -79,10 +72,6 @@ const Profile = () => {
     }
     expensesListResplikes();
   }, []);
-  
-  // console.log(resultArraylikes);
-  // const arrayLengthlikes = (resultArraydraft.data?.length)
-  // console.log(arrayLengthlikes); //3
 
   // Fetch and store user username and profile image
   useEffect(() => {
@@ -96,37 +85,14 @@ const Profile = () => {
     }
     expensesuser();
   }, []);
-
-  // var postData = [];
-  // for (var i = 0; i < arrayLength; i++){
-  //   postData[i] = ({
-  //     id: resultArray.data?.[i]._id,
-  //     cover: resultArray.data?.[i].cover,
-  //     title: resultArray.data?.[i].title,
-  //     description: resultArray.data?.[i].description,
-  //   })
-  // }
   
-  // const data = resultArray;
-  // const draft = resultArraydraft;
-  // const like = resultArraylikes;
-  // console.log(data);
-
-  //const [draft, setDraft] = useState([]);
-  //const [like, setLike] = useState([]);
-  
-  const handleDraft = (e, index) => {
-    localStorage.setItem('draftIndex', index);
-    navigate('/edit?type=edit')
+  // Handle draft recipe click: Store recipe content and navigate to edit page
+  const handleDraft = (e) => {
+    // Store JSON string of recipe in localStorage
+    localStorage.setItem('tempDraft', JSON.stringify(e));
+    navigate('/edit?type=edit');
   }
-/*
-  useEffect(() => {
-    const data = JSON.parse(localStorage.getItem('draft'));
-    if (data && data.length) {
-      setDraft(data);
-    }
-  }, []);
-*/
+
   const [avatar, setAvatar] = useState(avatarImg);
   const handleChooseImg = (e) => {
     e.preventDefault();

@@ -66,12 +66,20 @@ const formats = [
 
 const Edit = () => {
   const navigate = useNavigate();
+
+  // Store URL parameters
   const [searchParams] = useSearchParams(); // type/id
+  // Store type of operation: add or edit
   const type = searchParams.get('type');
-  const id = searchParams.get('id');
+  // Store recipe ID if the operation is edit
+  const [id, setId] = useState('');
+  // Store dataURL of the recipe's cover image
   const [cover, setCover] = useState('');
+  // Store recipe's title
   const [title, setTitle] = useState('');
+  // Store recipe's description
   const [description, setDescription] = useState('');
+  // Store recipe's content
   const [content, setContent] = useState('');
   const [avatar, setAvatar] = useState(avatarImg);
 
@@ -97,93 +105,119 @@ const Edit = () => {
       
     };
   }
-//Save the draft into the database if it is new or edit the drafted recipe
-  const handleSave = () => {
-    if(type === 'new'){
-      const recipe = {
-        title:title,
-        description:description,
-        cover:localStorage.getItem("image"),
-        content:content,
-        state:"draft"
-        }
-      axios.post(host + '/recipes/add',recipe,{
-        headers: {
-          'authorization': 'Bearer ' + localStorage.getItem("username") //the token is a variable which holds the token
-        }})
-      .then(res => {
-        console.log(res.data)
-        navigate('/')
-        })
-      .catch((error) => { console.error(error) });
-  }
-    const data = JSON.parse(localStorage.getItem('draft'));
-    if (data) {
-      if (type === 'edit') {
-        const index = localStorage.getItem('draftIndex');
-        data[index] = {
-          cover,
-          title,
-          description,
-          content
-        }
-      } else {
-        data.push({
-          cover,
-          title,
-          description,
-          content
-        });
-      }
-      localStorage.setItem('draft', JSON.stringify(data));
 
-    } else {
-      localStorage.setItem('draft', JSON.stringify([{
-        cover,
-        title,
-        description,
-        content
-      }]));
+  // Utility function: Save recipe to server
+  const saveRecipe = (recipe) => {
+    // New recipe saved to server
+    if (type === 'new') {
+      // Add new recipe to server
+      axios.post(
+        host + '/recipes/add',
+        recipe,
+        {
+          headers: {
+            'authorization': 'Bearer ' + localStorage.getItem("username")
+          }
+        }
+      )
+        .then(
+          // New recipe added to server
+          res => {
+            console.log(res.data);
+            // Navigate to home page
+            navigate('/');
+          }
+        )
+        .catch(
+          // Error occured when adding new recipe to server
+          err => {
+            console.error(err);
+          }
+        );
     }
-    localStorage.getItem('draft'.cover)
-    navigate('/profile');
-  }
-  const handleClick = () => {
-    const recipe = {
-      title:title,
-      description:description,
-      cover:localStorage.getItem("image"),
-      content:content,
-      state:"published"
-      }
-    axios.post(host + '/recipes/add',recipe,{
-      headers: {
-        'authorization': 'Bearer ' + localStorage.getItem("username") //the token is a variable which holds the token
-      }})
-    .then(res => {
-      console.log(res.data)
-      navigate('/')
-      })
-    .catch((error) => { console.error(error) });//login or password worng
+    // Edit recipe saved to server
+    else if (type === 'edit') {
+      // Update recipe to server
+      axios.put(
+        host + '/recipes/update/' + id,
+        recipe,
+        {
+          headers: {
+            'authorization': 'Bearer ' + localStorage.getItem("username")
+          }
+        }
+      )
+        .then(
+          // Recipe updated to server
+          res => {
+            console.log(res.data);
+            // Navigate to home page
+            navigate('/');
+          }
+        )
+        .catch(
+          // Error occured when updating recipe to server
+          err => {
+            console.error(err);
+          }
+        );
+    }
   };
+
+  // Handler: Save draft recipes to server
+  const handleSave = () => {
+    // Create draft recipe object
+    const recipe = {
+      title: title,
+      description: description,
+      cover: cover,
+      content: content,
+      state: "draft"
+    };
+
+    // Save draft recipe to server
+    saveRecipe(recipe);
+  };
+
+  // Handler: Save published recipes to server
+  const handleClick = () => {
+    // Create published recipe object
+    const recipe = {
+      title: title,
+      description: description,
+      cover: cover,
+      content: content,
+      state: "published"
+    };
+
+    // Save published recipe to server
+    saveRecipe(recipe);
+  };
+
   const handleEdit = (content, delta, source, editor) => {
     setContent(editor.getHTML())
   }
 
+  // Initial load: Load draft recipe if operation is edit
   useEffect(() => {
     if (type === 'edit') {
-      const index = localStorage.getItem('draftIndex');
-      const data = JSON.parse(localStorage.getItem('draft'));
-      if (data) {
-        setCover(data[+index].cover);
-        setTitle(data[+index].title);
-        setDescription(data[+index].description);
-        setContent(data[+index].content);
+      // Parse JS object from JSON string
+      const draft = JSON.parse(localStorage.getItem('tempDraft'));
+      // Remove draft recipe object once it has been parsed
+      localStorage.removeItem('tempDraft');
+
+      // Store recipe fields in local variables
+      if (draft) {
+        setId(draft._id);
+        setCover(draft.cover);
+        setTitle(draft.title);
+        setDescription(draft.description);
+        setContent(draft.content);
       }
     }
   }, []);
 
-
+  // Return formatting of the profile page 
   return (
     <PageWrapper>
       <NavBarWrapper>
@@ -192,7 +226,7 @@ const Edit = () => {
             sx={{ cursor: "pointer", position: "absolute", left: "30px" }}
             onClick={() => navigate(-1)}
           />
-          <Typography variant='h5'>{type ? 'New Post' : 'Edit'}</Typography>
+          <Typography variant='h5'>{type === 'new' ? 'New Post' : 'Edit'}</Typography>
         </Box>
       </NavBarWrapper>
       <Navpagewrapper>
