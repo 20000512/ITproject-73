@@ -21,87 +21,100 @@ import toast from 'react-hot-toast';
 import {host} from '../host';
 
 const Profile = () => {
-  
   const navigate = useNavigate();
   
-  const [resultArray, setResultArray] = useState([]);
-  const [resultArraydraft, setResultArraydraft] = useState([]);
-  const [resultArraylikes, setResultArraylikes] = useState([]);
-  const [resultuser, setuser] = useState([]);
+  // Store user posted recipes
+  const [posted, setPosted] = useState([]);
+  // Store user drafted recipes
+  const [draft, setDraft] = useState([]);
+  // Store user liked recipes
+  const [likes, setLikes] = useState([]);
+  // Store user username and profile image
+  const [user, setUser] = useState([]);
+  // Store state of the profile page: On posted, draft or likes page
+  const [tab, setTab] = useState(1);
+
+  // Fetch and store user posted recipes
   useEffect(() => {
-      const expensesListResp = async () => {
-        await axios.get(host + '/users/post',{headers: {
-          'authorization': 'Bearer ' + localStorage.getItem("username") //the token is a variable which holds the token
-        }})
-        .then(
-          response => setResultArray(response.data.data))
-      }
-      expensesListResp();
-    }, []);
-  const arrayLength = (resultArray.data?.length)
-  console.log(resultArray)
+    const expensesListResp = async () => {
+      await axios.get(host + '/users/post',{
+        headers: {
+          'authorization': 'Bearer ' + localStorage.getItem("username") 
+        }
+      })
+        .then(response => setPosted(response.data.data))
+    }
+    expensesListResp();
+  }, []);
+
+  // const arrayLength = (resultArray.data?.length)
+  // console.log(resultArray)
+
+  // Fetch and store user drafted recipes
   useEffect(() => {
     const expensesListRespdraft = async () => {
-      await axios.get(host + '/users/draft',{headers: {
-        'authorization': 'Bearer ' + localStorage.getItem("username") //the token is a variable which holds the token
-      }})
-      .then(
-        response => setResultArraydraft(response.data.data))
+      await axios.get(host + '/users/draft', {
+        headers: {
+          'authorization': 'Bearer ' + localStorage.getItem("username")
+        }
+      })
+        .then(response => setDraft(response.data.data))
     }
     expensesListRespdraft();
   }, []);
 
-  console.log(resultArraydraft);
-  const arrayLengthdraft = (resultArraydraft.data?.length)
-  console.log(arrayLengthdraft); //2
+  // console.log(resultArraydraft);
+  // const arrayLengthdraft = (resultArraydraft.data?.length)
+  // console.log(arrayLengthdraft); //2
 
- 
+  // Fetch and store user liked recipes
+  useEffect(() => {
+    const expensesListResplikes = async () => {
+      await axios.get(host + '/users/like', {
+        headers: {
+          'authorization': 'Bearer ' + localStorage.getItem("username")
+        }
+      })
+        .then(response => setLikes(response.data.data))
+    }
+    expensesListResplikes();
+  }, []);
+  
+  // console.log(resultArraylikes);
+  // const arrayLengthlikes = (resultArraydraft.data?.length)
+  // console.log(arrayLengthlikes); //3
+
+  // Fetch and store user username and profile image
   useEffect(() => {
     const expensesuser = async () => {
-      await axios.get(host + '/users/profile',{headers: {
-        'authorization': 'Bearer ' + localStorage.getItem("username") //the token is a variable which holds the token
-      }})
-      .then(
-        response => setuser(response.data.data))
+      await axios.get(host + '/users/profile', {
+        headers: {
+          'authorization': 'Bearer ' + localStorage.getItem("username")
+        }
+      })
+        .then(response => setUser(response.data.data))
     }
     expensesuser();
   }, []);
 
+  // var postData = [];
+  // for (var i = 0; i < arrayLength; i++){
+  //   postData[i] = ({
+  //     id: resultArray.data?.[i]._id,
+  //     cover: resultArray.data?.[i].cover,
+  //     title: resultArray.data?.[i].title,
+  //     description: resultArray.data?.[i].description,
+  //   })
+  // }
   
-  useEffect(() => {
-    const expensesListResplikes = async () => {
-      await axios.get(host + '/users/like',{headers: {
-        'authorization': 'Bearer ' + localStorage.getItem("username") //the token is a variable which holds the token
-      }})
-      .then(
-        response => setResultArraylikes(response.data.data))
-    }
-    expensesListResplikes();
-  }, []);
-  console.log(resultArraylikes);
-  const arrayLengthlikes = (resultArraydraft.data?.length)
-  console.log(arrayLengthlikes); //3
-  var postData = [];
-  for (var i = 0; i < arrayLength; i++){
-    postData[i] = ({
-      id: resultArray.data?.[i]._id,
-      cover: resultArray.data?.[i].cover,
-      title: resultArray.data?.[i].title,
-      description: resultArray.data?.[i].description,
-    })
-  }
-  
-  const data = resultArray;
-  const draft = resultArraydraft;
-  const like = resultArraylikes;
-  console.log(data);
+  // const data = resultArray;
+  // const draft = resultArraydraft;
+  // const like = resultArraylikes;
+  // console.log(data);
 
-  
   //const [draft, setDraft] = useState([]);
   //const [like, setLike] = useState([]);
   
-  const [tab, setTab] = useState(1);
-
   const handleDraft = (e, index) => {
     localStorage.setItem('draftIndex', index);
     navigate('/edit?type=edit')
@@ -134,65 +147,88 @@ const Profile = () => {
     };
   }
 
+  // Render posted/draft/likes recipes based on the current page
   const renderItem = () => {
     switch (tab) {
+      // Render posted recipes
       case 1:
-        return data.length ? data.map((e) => (
+        return posted.length ? posted.map((e) => (
           <ItemCard
-            onClick={() => navigate("/detail/" + e.id)}
+            onClick={() => navigate("/detail/" + e._id)}
             sx={{ mb: "30px" }}
-            key={e.id}
+            key={e._id}
             title={e.title}
             cover={e.cover}
             description={e.description}
           />
-        )) : <Typography sx={{
-          cursor: "pointer",
-          display: "flex",
-          alignItems: "center",
-          justifyContent: "center",
-          color: tab === 1 ? "black" : "#787878",
-        }}><RuleFolderOutlinedIcon />There are no posted here .</Typography>;
+        )) : 
+        // Default response if user don't have any posted recipes
+        <Typography sx={
+          {
+            cursor: "pointer",
+            display: "flex",
+            alignItems: "center",
+            justifyContent: "center",
+            color: tab === 1 ? "black" : "#787878",
+          }
+        }>
+          <RuleFolderOutlinedIcon />There are no posted here.
+        </Typography>;
+      // Render draft recipes
       case 2:
         return draft.length ? draft.map((e, index) => (
           <ItemCard
             onClick={() => handleDraft(e, index)}
             sx={{ mb: "30px" }}
-            key={e.id}
+            key={e._id}
             title={e.title}
             cover={e.cover}
             description={e.description}
           />
-        )) : <Typography sx={{
-          cursor: "pointer",
-          display: "flex",
-          alignItems: "center",
-          justifyContent: "center",
-          color: tab === 1 ? "black" : "#787878",
-        }}><RuleFolderOutlinedIcon />There are no draft here .</Typography>;
+        )) : 
+        // Default response if user don't have any draft recipes
+        <Typography sx={
+          {
+            cursor: "pointer",
+            display: "flex",
+            alignItems: "center",
+            justifyContent: "center",
+            color: tab === 1 ? "black" : "#787878",
+          }
+        }>
+          <RuleFolderOutlinedIcon />There are no draft here.
+        </Typography>;
+      // Render liked recipes
       case 3:
-        return like.length > 0 ? like.map((e) => (
+        return likes.length ? likes.map((e) => (
           <ItemCard
-            onClick={() => navigate("/detail/" + e.id)}
+            onClick={() => navigate("/detail/" + e._id)}
             sx={{ mb: "30px" }}
-            key={e.id}
+            key={e._id}
             title={e.title}
             cover={e.cover}
             description={e.description}
           />
-        )): <Typography sx={{
-          cursor: "pointer",
-          display: "flex",
-          alignItems: "center",
-          justifyContent: "center",
-          color: tab === 1 ? "black" : "#787878",
-        }}><RuleFolderOutlinedIcon />There are no likes here .</Typography>;
+        )) : 
+        // Default response if user don't have any liked recipes
+        <Typography sx={
+          {
+            cursor: "pointer",
+            display: "flex",
+            alignItems: "center",
+            justifyContent: "center",
+            color: tab === 1 ? "black" : "#787878",
+          }
+        }>
+          <RuleFolderOutlinedIcon />There are no likes here.
+        </Typography>;
       default:
-        return data.map((e) => (
+        // Default case, render posted recipes
+        return posted.map((e) => (
           <ItemCard
-            onClick={() => navigate("/detail/" + e.id)}
+            onClick={() => navigate("/detail/" + e._id)}
             sx={{ mb: "30px" }}
-            key={e.id}
+            key={e._id}
             title={e.title}
             cover={e.cover}
             description={e.description}
@@ -200,6 +236,8 @@ const Profile = () => {
         ));
     }
   };
+
+  // Return formatting of the profile page
   return (
     <PageWrapper>
       <NavBarWrapper>
