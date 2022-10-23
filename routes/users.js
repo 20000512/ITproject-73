@@ -179,6 +179,7 @@ router.route('/profile').get(checkAuth, (req, res) => {
 router.route('/signup').post(async (req, res) => {
     //create new User
     //Turn email to lowercase since email is case insensitive
+    console.log(req.body);
     const email = req.body.email.toLowerCase();
     const password = await bcrypt.hash(req.body.password, 10);
     const username = req.body.username;
@@ -191,7 +192,7 @@ router.route('/signup').post(async (req, res) => {
         //save new user
         const newUser = new User({email, password, username});
         newUser.save()
-            .then(() => res.status(201).json('Sign up successful'))
+            .then(() => res.status(200).json('Sign up successful'))
             .catch(err => res.status(500).json('Error: ' + err));
     }
 });

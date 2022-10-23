@@ -18,7 +18,7 @@ function App() {
   const [value, setValue] = useState(0);
   const ref = useRef(null);
   const navigate = useNavigate();
-  const routeList = ['/', '/search', '/sort', '/profile'];
+  const routeList = ['/', '/search', '/category', '/profile'];
   const location = useLocation();
 
   useEffect(() => {
@@ -49,7 +49,7 @@ function App() {
         >
           <BottomNavigationAction label="Home" icon={<HomeOutlinedIcon />} />
           <BottomNavigationAction label="Search" icon={<SearchOutlinedIcon />} />
-          <BottomNavigationAction label="Sort" icon={<DashboardOutlinedIcon />} />
+          <BottomNavigationAction label="Category" icon={<DashboardOutlinedIcon />} />
           <BottomNavigationAction label="Profile" icon={<Person2OutlinedIcon />} />
           <IconButton onClick={() => navigate('/edit?type=new')} sx={{ position: 'absolute', top: '-15px', left: 'calc(50% - 10px)', width: '40px', height: '40px', background: '#ffc967', borderRadius: '50%', '&:hover': { background: '#fabd51' } }} aria-label="delete" size="large">
             <AddIcon fontSize="inherit" />
