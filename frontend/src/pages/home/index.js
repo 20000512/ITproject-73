@@ -37,7 +37,7 @@ const Home = () => {
   }
   
   const data = postData;
-  console.log(data);
+
 
 
   return (

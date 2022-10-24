@@ -48,6 +48,7 @@ const Home = () => {
       await axios.get(host + '/recipes/'+params.id)
       .then(response => {
         setData(response.data.data)
+
       })
     } 
     expensesListResp();
@@ -136,7 +137,15 @@ const Home = () => {
         >
           <BottomNavigation>
             <BottomNavigationAction
-              onClick={() => setLike(!like)}
+              onClick={() => {
+                
+                axios.put(host + '/recipes/like/' + params.id, {userId: data.userId}, {
+                  headers: {
+                    'authorization': 'Bearer ' + localStorage.getItem("username")
+                  }
+                }).then(console.log("successful"))
+                
+                setLike(!like)}}
               label="Home"
               icon={
                 like ? (
