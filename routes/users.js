@@ -5,6 +5,8 @@ const jwt = require('jsonwebtoken');
 const checkAuth = require('../middleware/check_auth');
 //check format of object ID
 const checkObjID = require('../middleware/check_obj_id');
+const bodyParser = require('body-parser')
+const jsonParser = bodyParser.json()
 let User = require('../models/user.model');
 let Recipe = require('../models/recipe.model');
 
@@ -176,7 +178,7 @@ router.route('/profile').get(checkAuth, (req, res) => {
 });
 
 //signup
-router.route('/signup').post(async (req, res) => {
+router.route('/signup').post(jsonParser,async (req, res) => {
     //create new User
     //Turn email to lowercase since email is case insensitive
     console.log(req.body);
@@ -191,6 +193,7 @@ router.route('/signup').post(async (req, res) => {
     } else {
         //save new user
         const newUser = new User({email, password, username});
+        console.log(newUser);
         newUser.save()
             .then(() => res.status(200).json('Sign up successful'))
             .catch(err => res.status(500).json('Error: ' + err));

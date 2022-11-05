@@ -4,7 +4,8 @@ const checkAuth = require('../middleware/check_auth');
 //check format of object ID
 const checkObjID = require('../middleware/check_obj_id');
 let Recipe = require('../models/recipe.model');
-
+const bodyParser = require('body-parser')
+const jsonParser = bodyParser.json()
 //get all recipes (For convenience only, remove before handover)
 router.route('/').get((req, res) => {
     Recipe.find()
@@ -20,7 +21,7 @@ router.route('/').delete((req, res) => {
 })
 
 //create a new recipe
-router.route('/add').post(checkAuth, (req, res) => {
+router.route('/add').post(checkAuth, jsonParser,(req, res) => {
     //parse JSON for valid keys value pairs
     const {cover = "", title = "", description = "", content = "", state = ""} = req.body;
     

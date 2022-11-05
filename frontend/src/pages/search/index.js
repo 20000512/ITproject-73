@@ -64,7 +64,6 @@ const Search = () => {
     } 
     expensesListResp();
   }, [keywords]);
-
   return (
     <PageWrapper>
       <NavBarWrapper>

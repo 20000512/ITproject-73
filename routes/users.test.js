@@ -1,13 +1,11 @@
 const users = require ("./users.js")
 const supertest = require('supertest')
-const request = supertest(users)
-
-        test("should respond with a 200 tatus code",async () => {
-            const response = await request(user).post("/signup").send({
-                email:"w666",
-                password: "w666",
-                username:"w666"
-            })
-            expect(response.statusCode).toBe(200)
-    }).set('Content-Type', 'application/json')
+const router = require('express').Router();
+const request = require('supertest')
+test("should respond with a 200 tatus code",async () => {
+    console.log("aaaaaaaaaaaaaaaaa");
+    const response = await request(users).post("/signup").send({"email":"wwww12dSD3","password":"adasdasdas","username":"adasdasdasdaYrrrrY"})
+    console.log("BBBBBBBBBBBBB");
+    expect(response.statusCode).toBe(200)
+})
         
