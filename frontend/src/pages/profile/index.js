@@ -29,8 +29,10 @@ const Profile = () => {
   const [draft, setDraft] = useState([]);
   // Store user liked recipes
   const [likes, setLikes] = useState([]);
-  // Store user username and profile image
-  const [user, setUser] = useState([]);
+  // Store username
+  const [username, setUserName] = useState([]);
+  // Store profile image
+  const [avatar, setAvatar] = useState('');
   // Store state of the profile page: On posted, draft or likes page
   const [tab, setTab] = useState(1);
 
@@ -81,22 +83,29 @@ const Profile = () => {
           'authorization': 'Bearer ' + localStorage.getItem("username")
         }
       })
-        .then(response => {
-          setUser(response.data)
-          if (user.profilePicture != []){
-            setAvatar(user.profilePicture)
-            console.log(avatar)}})
+        .then(res => {
+          // Set user username
+          setUserName(res.data.username);
+          // Set user profile image
+          console.log(res.data.profilePicture);
+          if (res.data.profilePicture) {
+            // User have profile image
+            setAvatar(res.data.profilePicture);
+          } else {
+            // User do not have profile image, use default
+            setAvatar(avatarImg);
+          }
+        })
     }
     expensesuser();
   }, []);
+
   // Handle draft recipe click: Store recipe content and navigate to edit page
   const handleDraft = (e) => {
     // Store JSON string of recipe in localStorage
     localStorage.setItem('tempDraft', JSON.stringify(e));
     navigate('/edit?type=edit');
   }
-  console.log(user)
-  const [avatar, setAvatar] = useState(avatarImg);
  
   const handleChooseImg = (e) => {
     e.preventDefault();
@@ -107,15 +116,29 @@ const Profile = () => {
     input.onchange = async () => {
       try {
         const reader = new FileReader();
+
+        // Reader loaded the image, upload image now
         reader.addEventListener('load', () => {
-          setAvatar(reader.result.toString() || '')
+          // dataURL of the image selected
+          const img = reader.result.toString() || '';
+          
+          // Upload image to server
+          axios.put(host + '/users/update', {profilePicture: img}, {
+            headers: {
+              'authorization': 'Bearer ' + localStorage.getItem("username")
+            }
+          })
+            // Upload image successful
+            .then(res => {
+              // Update local profile image
+              setAvatar(img);
+              // Display success message
+              toast.success('Profile image updated!');
+            })
         });
+
+        // Read image selected
         reader.readAsDataURL(input.files[0]);
-        axios.put(host + '/users/update',{profilePicture: avatar}, {
-          headers: {
-            'authorization': 'Bearer ' + localStorage.getItem("username")
-          }
-        })
       } catch (error) {
         toast.error('Upload error');
       }
