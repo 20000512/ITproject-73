@@ -30,7 +30,7 @@ const Profile = () => {
   // Store user liked recipes
   const [likes, setLikes] = useState([]);
   // Store username
-  const [username, setUserName] = useState([]);
+  const [userName, setUserName] = useState([]);
   // Store profile image
   const [avatar, setAvatar] = useState('');
   // Store state of the profile page: On posted, draft or likes page
@@ -87,7 +87,6 @@ const Profile = () => {
           // Set user username
           setUserName(res.data.username);
           // Set user profile image
-          console.log(res.data.profilePicture);
           if (res.data.profilePicture) {
             // User have profile image
             setAvatar(res.data.profilePicture);
@@ -271,7 +270,7 @@ const Profile = () => {
             <Box sx={{ flex: 1, display: "flex", alignItems: "center" }}>
             <img onClick={handleChooseImg} src={avatar} alt="" style={{ width: "140px", height: "140px", borderRadius: "50%" }} />
               <Typography sx={{ ml: "24px" }} variant="h4">
-                Sam
+                {userName}
               </Typography>
             </Box>
             <SettingsOutlinedIcon
