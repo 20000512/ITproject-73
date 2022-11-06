@@ -81,19 +81,23 @@ const Profile = () => {
           'authorization': 'Bearer ' + localStorage.getItem("username")
         }
       })
-        .then(response => setUser(response.data.data))
+        .then(response => {
+          setUser(response.data)
+          if (user.profilePicture != []){
+            setAvatar(user.profilePicture)
+            console.log(avatar)}})
     }
     expensesuser();
   }, []);
-  
   // Handle draft recipe click: Store recipe content and navigate to edit page
   const handleDraft = (e) => {
     // Store JSON string of recipe in localStorage
     localStorage.setItem('tempDraft', JSON.stringify(e));
     navigate('/edit?type=edit');
   }
-
+  console.log(user)
   const [avatar, setAvatar] = useState(avatarImg);
+ 
   const handleChooseImg = (e) => {
     e.preventDefault();
     const input = document.createElement('input');
@@ -107,6 +111,11 @@ const Profile = () => {
           setAvatar(reader.result.toString() || '')
         });
         reader.readAsDataURL(input.files[0]);
+        axios.put(host + '/users/update',{profilePicture: avatar}, {
+          headers: {
+            'authorization': 'Bearer ' + localStorage.getItem("username")
+          }
+        })
       } catch (error) {
         toast.error('Upload error');
       }
