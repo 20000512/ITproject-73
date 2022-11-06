@@ -268,7 +268,7 @@ const Profile = () => {
             }}
           >
             <Box sx={{ flex: 1, display: "flex", alignItems: "center" }}>
-            <img onClick={handleChooseImg} src={avatar} alt="" style={{ width: "140px", height: "140px", borderRadius: "50%" }} />
+            <img onClick={handleChooseImg} src={avatar} alt="" style={{ width: "140px", height: "140px", borderRadius: "50%", objectFit: "cover", }} />
               <Typography sx={{ ml: "24px" }} variant="h4">
                 {userName}
               </Typography>
