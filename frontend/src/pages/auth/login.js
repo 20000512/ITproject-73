@@ -31,7 +31,7 @@ const Login = () => {
         localStorage.setItem('username', (res.data.token))
         navigate('/')
         })
-      .catch((error) => { console.error(error) });//login or password worng
+      .catch((error) => {toast.error('Email or password is not correct') });//login or password worng
   };
   
   return (

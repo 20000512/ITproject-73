@@ -108,7 +108,7 @@ const Home = () => {
         >
           <Box sx={{ width: "100%" }}>
             <img
-              style={{ width: "100%", height: "300px" }}
+              style={{ width: "100%", height: "100%" }}
               src={data.cover}
               alt=""
             />
