@@ -15,16 +15,16 @@ const Category= () => {
     const [show, setShow] = useState(false);
     const [data, setData] = useState([{
       id: 1,
-      type: 'main',
-      list: ['hi', 'food', 'food', 'food', 'food', 'food']
+      type: 'Ingredient',
+      list: ['Beef', 'Pork', 'Chicken','Salmon']
     }, {
       id: 2,
-      type: 'other',
-      list: ['other', 'other', 'other food', 'other food']
+      type: 'Cuisine',
+      list: ['French', 'Chinese', 'Japanese,', 'Italian']
     }, {
       id: 3,
-      type: 'food',
-      list: ['food food', 'food food', 'food food', 'food food']
+      type: 'Special',
+      list: ['Vegan', 'Gluten-free', 'Vegetarian']
     }])
     useEffect(() => {
       console.log(keywords)
