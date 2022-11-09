@@ -96,7 +96,7 @@ const Edit = () => {
         reader.addEventListener('load', () => {
           setAvatar(reader.result.toString() || '')
           const url = reader.result
-          localStorage.setItem("image",url);
+          setCover(url);
         });
         reader.readAsDataURL(input.files[0]);
       } catch (error) {
