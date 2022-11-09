@@ -8,6 +8,7 @@ import { useNavigate } from 'react-router-dom';
 import ArrowBackIosIcon from "@mui/icons-material/ArrowBackIos";
 import ArrowForwardIosOutlinedIcon from '@mui/icons-material/ArrowForwardIosOutlined';
 import axios from 'axios';
+import {host} from '../host';
 const Setting = () => {
   const navigate = useNavigate();
 
@@ -57,7 +58,7 @@ const Setting = () => {
           <Box onClick={() => navigate('/personal')}  sx={{height: '56px',cursor: 'pointer', borderBottom: '1px solid #787878', width: '100%', display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>Personal details <ArrowForwardIosOutlinedIcon/></Box>
           <Box onClick={() => navigate('/changepassword')}  sx={{height: '56px',cursor: 'pointer', borderBottom: '1px solid #787878',width: '100%',display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>Change password <ArrowForwardIosOutlinedIcon/></Box>
           <Box onClick={() => {localStorage.removeItem('username');navigate('/login')}}  sx={{height: '56px',cursor: 'pointer', borderBottom: '1px solid #787878',width: '100%',display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>Log out <ArrowForwardIosOutlinedIcon/></Box>
-          <Box onClick={() => {axios.put('/users/delete',{} ,{
+          <Box onClick={() => {axios.put(host +'/users/delete',{} ,{
           headers: {
             'authorization': 'Bearer ' + localStorage.getItem("username") //the token is a variable which holds the token
           }});
