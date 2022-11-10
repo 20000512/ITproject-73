@@ -17,17 +17,17 @@ const Category = () => {
     {
       id: 1,
       type: "Ingredient",
-      list: ["Beef", "Pork", "Chicken", "Salmon"],
+      list: ["Beef", "Pork", "Chicken", "Fish", "Rice", "Noodle", "Pasta"],
     },
     {
       id: 2,
       type: "Cuisine",
-      list: ["French", "Chinese", "Japanese,", "Italian"],
+      list: ["French", "Chinese", "Japanese", "Italian", "American", "Indian", "German"],
     },
     {
       id: 3,
       type: "Special",
-      list: ["Vegan", "Gluten-free", "Vegetarian"],
+      list: ["Vegan", "Gluten-free", "Vegetarian", "No nuts"],
     },
   ]);
   useEffect(() => {
