@@ -86,7 +86,7 @@ const Login = () => {
               <TextField
                 sx={{ width: "400px", background: "#ffc99c" }}
                 id="outlined-name"
-                label="Emial address"
+                label="Email address"
                 value={username}
                 onChange={(e) => setUsername(e.target.value)}
                 margin="normal"

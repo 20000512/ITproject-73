@@ -1,3 +1,3 @@
-// base URL of all axios connections
-const host = "http://localhost:5003";
+// base URL of all axios connections "http://localhost:5003" or ""
+const host = "";
 export { host };

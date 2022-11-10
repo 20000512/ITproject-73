@@ -147,7 +147,7 @@ const Setting = () => {
               alignItems: "center",
             }}
           >
-            Deleta acoount <ArrowForwardIosOutlinedIcon />
+            Delete acoount <ArrowForwardIosOutlinedIcon />
           </Box>
         </Box>
       </Navpagewrapper>
