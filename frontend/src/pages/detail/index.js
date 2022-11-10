@@ -1,6 +1,13 @@
 import oneImg from "../../assets/1.jpg";
 import avatarImg from "../../assets/avatar.jpg";
-import { Box, Typography, Modal, TextField, Stack, Button } from "@mui/material";
+import {
+  Box,
+  Typography,
+  Modal,
+  TextField,
+  Stack,
+  Button,
+} from "@mui/material";
 import PageWrapper from "../../components/pagewrapper";
 import NavBarWrapper from "../../components/navbarwrapper";
 import Navpagewrapper from "../../components/navpagewrapper";
@@ -15,12 +22,11 @@ import IosShareOutlinedIcon from "@mui/icons-material/IosShareOutlined";
 import ArrowBackIosIcon from "@mui/icons-material/ArrowBackIos";
 import { useNavigate } from "react-router-dom";
 import HighlightOffIcon from "@mui/icons-material/HighlightOff";
-import axios from 'axios';
-import {host} from '../host';
-import {Route, Link, Routes, useParams} from 'react-router-dom';
-import DeleteIcon from '@mui/icons-material/Delete';
-import toast from 'react-hot-toast';
-
+import axios from "axios";
+import { host } from "../host";
+import { Route, Link, Routes, useParams } from "react-router-dom";
+import DeleteIcon from "@mui/icons-material/Delete";
+import toast from "react-hot-toast";
 
 const style = {
   position: "absolute",
@@ -38,7 +44,7 @@ const style = {
 const Home = () => {
   const navigate = useNavigate();
   const params = useParams(); //'634fdf39f48984c37b7a40b0' //String
-  console.log(params)
+  console.log(params);
   const [resultArray, setResultArray] = useState([]);
   const [data, setData] = useState({});
   const [like, setLike] = useState(false);
@@ -49,36 +55,29 @@ const Home = () => {
   const [finished, setFinished] = useState(false);
   const [posted, setPosted] = useState([]);
 
-  
-  
   useEffect(() => {
     const expensesListResp = async () => {
-      await axios.get(host + '/recipes/'+params.id)
-      .then(response => {
-        setData(response.data.data)
-
-      })
-    } 
+      await axios.get(host + "/recipes/" + params.id).then((response) => {
+        setData(response.data.data);
+      });
+    };
     expensesListResp();
   }, []);
 
   useEffect(() => {
     const expensesListResp = async () => {
-      await axios.get(host + '/recipes/didlike/'+params.id, {
-      headers: {
-        'authorization': 'Bearer ' + localStorage.getItem("username")
-      }
-    })
-      .then(response => {
-        setLike(response.data)
-
-      })
-    } 
+      await axios
+        .get(host + "/recipes/didlike/" + params.id, {
+          headers: {
+            authorization: "Bearer " + localStorage.getItem("username"),
+          },
+        })
+        .then((response) => {
+          setLike(response.data);
+        });
+    };
     expensesListResp();
   }, []);
-  
-  
-  
 
   const handleCopy = () => {
     navigator.clipboard.writeText(window.location.href);
@@ -87,25 +86,28 @@ const Home = () => {
 
   const handleComent = () => {
     setFinished(true);
-  }
+  };
 
-  //delete funtion 
- 
-  const handleClick = (() => {
-    console.log("inside button");
-    const expensesListResp = async () => {
-      await axios.delete(host + '/recipes/'+params.id,{
-        headers: {
-          'authorization': 'Bearer ' + localStorage.getItem("username") 
-        }
-      })
-        .then(response => setPosted(response.data.data))
-        .catch((error) => {toast.error('You have no access to delete recipe') });
-    }
-    expensesListResp();
-  }, []);
-  
-  
+  //delete funtion
+
+  const handleClick =
+    (() => {
+      console.log("inside button");
+      const expensesListResp = async () => {
+        await axios
+          .delete(host + "/recipes/" + params.id, {
+            headers: {
+              authorization: "Bearer " + localStorage.getItem("username"),
+            },
+          })
+          .then((response) => setPosted(response.data.data))
+          .catch((error) => {
+            toast.error("You have no access to delete recipe");
+          });
+      };
+      expensesListResp();
+    },
+    []);
 
   return (
     <PageWrapper>
@@ -130,16 +132,22 @@ const Home = () => {
             />
             <Typography sx={{ ml: "16px" }}>{data.author}</Typography>
           </Box>
-          <Button variant="outlined" startIcon={<DeleteIcon />} onClick={() => {
-                
-                axios.delete(host + '/recipes/' + params.id, {
+          <Button
+            variant="outlined"
+            startIcon={<DeleteIcon />}
+            onClick={() => {
+              axios
+                .delete(host + "/recipes/" + params.id, {
                   headers: {
-                    'authorization': 'Bearer ' + localStorage.getItem("username")
-                  }
-                }).then(navigate("/profile"))
-                  .catch((error) => {toast.error('You have no access to delete recipe') });
-                
-                }}>
+                    authorization: "Bearer " + localStorage.getItem("username"),
+                  },
+                })
+                .then(navigate("/profile"))
+                .catch((error) => {
+                  toast.error("You have no access to delete recipe");
+                });
+            }}
+          >
             Delete
           </Button>
           <Box sx={{ mr: "30px" }}>
@@ -174,9 +182,7 @@ const Home = () => {
               <Typography gutterBottom variant="h4" component="div">
                 Comments
               </Typography>
-              <Box>
-                
-              </Box>
+              <Box></Box>
             </Box>
           </Box>
         </Box>
@@ -187,14 +193,21 @@ const Home = () => {
           <BottomNavigation>
             <BottomNavigationAction
               onClick={() => {
-                
-                axios.put(host + '/recipes/like/' + params.id, {userId: data.userId}, {
-                  headers: {
-                    'authorization': 'Bearer ' + localStorage.getItem("username")
-                  }
-                }).then(console.log("successful"))
-                
-                setLike(!like)}}
+                axios
+                  .put(
+                    host + "/recipes/like/" + params.id,
+                    { userId: data.userId },
+                    {
+                      headers: {
+                        authorization:
+                          "Bearer " + localStorage.getItem("username"),
+                      },
+                    }
+                  )
+                  .then(console.log("successful"));
+
+                setLike(!like);
+              }}
               label="Home"
               icon={
                 like ? (
@@ -217,7 +230,7 @@ const Home = () => {
         onClose={() => setShare(false)}
         aria-labelledby="modal-modal-title"
         aria-describedby="modal-modal-description"
-      // sx={{ }}
+        // sx={{ }}
       >
         <Box sx={style}>
           <Box sx={{ display: "flex", justifyContent: "space-between" }}>
@@ -260,7 +273,11 @@ const Home = () => {
             <Typography>Comment</Typography>
           </Box>
           <Box sx={{ width: "100%" }}>
-            {finished ? <Typography sx={{ mt: "16px" }}>√ You had already submit your comment !</Typography> :
+            {finished ? (
+              <Typography sx={{ mt: "16px" }}>
+                √ You had already submit your comment !
+              </Typography>
+            ) : (
               <TextField
                 id="outlined-multiline-flexible"
                 multiline
@@ -269,21 +286,39 @@ const Home = () => {
                 value={commentText}
                 sx={{ width: "100%", background: "#c3c3c3", mt: "16px" }}
                 onChange={(e) => setCommentText(e.target.value)}
-              />}
+              />
+            )}
           </Box>
-          <Box sx={{ display: "flex", justifyContent: "end", mt: '24px' }}>
-            {!finished ? <>
-              <Button onClick={() => setComment(false)} sx={{ background: '#f57c18', color: 'white' }} variant="outlined" color="warning">
-                cancel
-              </Button>
-              <Button onClick={handleComent} sx={{ background: '#f57c18', color: 'white', ml: '16px' }} variant="outlined" color="warning">
-                Submit
-              </Button>
-            </> :
-              <Button onClick={() => setComment(false)} sx={{ background: '#f57c18', color: 'white' }} variant="outlined" color="warning">
+          <Box sx={{ display: "flex", justifyContent: "end", mt: "24px" }}>
+            {!finished ? (
+              <>
+                <Button
+                  onClick={() => setComment(false)}
+                  sx={{ background: "#f57c18", color: "white" }}
+                  variant="outlined"
+                  color="warning"
+                >
+                  cancel
+                </Button>
+                <Button
+                  onClick={handleComent}
+                  sx={{ background: "#f57c18", color: "white", ml: "16px" }}
+                  variant="outlined"
+                  color="warning"
+                >
+                  Submit
+                </Button>
+              </>
+            ) : (
+              <Button
+                onClick={() => setComment(false)}
+                sx={{ background: "#f57c18", color: "white" }}
+                variant="outlined"
+                color="warning"
+              >
                 Okay
               </Button>
-            }
+            )}
           </Box>
         </Box>
       </Modal>

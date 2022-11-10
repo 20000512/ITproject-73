@@ -1,28 +1,24 @@
-import React from 'react';
-import ReactDOM from 'react-dom/client';
-import './index.css';
-import App from './App';
-import reportWebVitals from './reportWebVitals';
-import {
-  BrowserRouter,
-  Routes,
-  Route,
-} from "react-router-dom";
-import { Toaster } from 'react-hot-toast';
-import Home from './pages/home';
-import Login from './pages/auth/login';
-import Search from './pages/search';
-import Category from './pages/category';
-import Profile from './pages/profile';
-import Signin from './pages/auth/signin';
-import Forget from './pages/auth/forget';
-import Detail from './pages/detail';
-import Setting from './pages/profile/setting';
-import ChangePassword from './pages/profile/changepassword';
-import Personal from './pages/profile/personal';
-import Edit from './pages/edit';
+import React from "react";
+import ReactDOM from "react-dom/client";
+import "./index.css";
+import App from "./App";
+import reportWebVitals from "./reportWebVitals";
+import { BrowserRouter, Routes, Route } from "react-router-dom";
+import { Toaster } from "react-hot-toast";
+import Home from "./pages/home";
+import Login from "./pages/auth/login";
+import Search from "./pages/search";
+import Category from "./pages/category";
+import Profile from "./pages/profile";
+import Signin from "./pages/auth/signin";
+import Forget from "./pages/auth/forget";
+import Detail from "./pages/detail";
+import Setting from "./pages/profile/setting";
+import ChangePassword from "./pages/profile/changepassword";
+import Personal from "./pages/profile/personal";
+import Edit from "./pages/edit";
 
-const root = ReactDOM.createRoot(document.getElementById('root'));
+const root = ReactDOM.createRoot(document.getElementById("root"));
 root.render(
   <React.StrictMode>
     <BrowserRouter>

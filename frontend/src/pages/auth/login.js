@@ -1,69 +1,90 @@
-import { Box, Button, TextField, Typography, InputAdornment } from '@mui/material';
-import { useState } from 'react';
-import {host} from '../host';
-import VpnKeyOutlinedIcon from '@mui/icons-material/VpnKeyOutlined';
-import EmailOutlinedIcon from '@mui/icons-material/EmailOutlined';
-import AccountCircleOutlinedIcon from '@mui/icons-material/AccountCircleOutlined';
-import { useNavigate } from 'react-router-dom';
-import PageWrapper from '../../components/pagewrapper';
-import toast from 'react-hot-toast';
-import axios from 'axios';
-import Snackbar from '@mui/material/Snackbar';
-import IconButton from '@mui/material/IconButton';
-import CloseIcon from '@mui/icons-material/Close';
+import {
+  Box,
+  Button,
+  TextField,
+  Typography,
+  InputAdornment,
+} from "@mui/material";
+import { useState } from "react";
+import { host } from "../host";
+import VpnKeyOutlinedIcon from "@mui/icons-material/VpnKeyOutlined";
+import EmailOutlinedIcon from "@mui/icons-material/EmailOutlined";
+import AccountCircleOutlinedIcon from "@mui/icons-material/AccountCircleOutlined";
+import { useNavigate } from "react-router-dom";
+import PageWrapper from "../../components/pagewrapper";
+import toast from "react-hot-toast";
+import axios from "axios";
+import Snackbar from "@mui/material/Snackbar";
+import IconButton from "@mui/material/IconButton";
+import CloseIcon from "@mui/icons-material/Close";
 
 const Login = () => {
   const navigate = useNavigate();
-  const [username, setUsername] = useState('');
-  const [password, setPassword] = useState('');
+  const [username, setUsername] = useState("");
+  const [password, setPassword] = useState("");
 
   const handleClick = () => {
-    if (!username) return toast.error('Email cannot be blank');
-    if (!password) return toast.error('Password cannot be blank');
+    if (!username) return toast.error("Email cannot be blank");
+    if (!password) return toast.error("Password cannot be blank");
     const user = {
-      email : username,
-      password : password
-    }
+      email: username,
+      password: password,
+    };
     console.log(user);
-    axios.post(host + '/users/login',user)
-      .then(res => {
-        console.log(res.data)
-        localStorage.setItem('username', (res.data.token))
-        navigate('/')
-        })
-      .catch((error) => {toast.error('Email or password is not correct') });//login or password worng
+    axios
+      .post(host + "/users/login", user)
+      .then((res) => {
+        console.log(res.data);
+        localStorage.setItem("username", res.data.token);
+        navigate("/");
+      })
+      .catch((error) => {
+        toast.error("Email or password is not correct");
+      }); //login or password worng
   };
-  
+
   return (
     <PageWrapper>
-      <Box sx={{
-        width: '100vw',
-        height: '100vh',
-        display: 'flex',
-        flexDirection: 'column',
-        justifyContent: 'center',
-        alignItems: 'center'
-      }}>
+      <Box
+        sx={{
+          width: "100vw",
+          height: "100vh",
+          display: "flex",
+          flexDirection: "column",
+          justifyContent: "center",
+          alignItems: "center",
+        }}
+      >
         <form noValidate autoComplete="off" onSubmit={handleClick}>
-          <Box sx={{
-            display: 'flex',
-            flexDirection: 'column',
-            justifyContent: 'center',
-          }}>
-            <Box sx={{
-              display: 'flex', justifyContent: 'center',
-              flexDirection: 'column', alignItems: 'center'
-            }}>
-              <AccountCircleOutlinedIcon sx={{ fontSize: '60px' }} />
+          <Box
+            sx={{
+              display: "flex",
+              flexDirection: "column",
+              justifyContent: "center",
+            }}
+          >
+            <Box
+              sx={{
+                display: "flex",
+                justifyContent: "center",
+                flexDirection: "column",
+                alignItems: "center",
+              }}
+            >
+              <AccountCircleOutlinedIcon sx={{ fontSize: "60px" }} />
               <Typography variant="h4" color="inherit">
                 {"Log in"}
               </Typography>
             </Box>
-            <Box sx={{
-              display: 'flex', justifyContent: 'center', marginTop: '20px'
-            }}>
+            <Box
+              sx={{
+                display: "flex",
+                justifyContent: "center",
+                marginTop: "20px",
+              }}
+            >
               <TextField
-                sx={{ width: '400px', background: '#ffc99c' }}
+                sx={{ width: "400px", background: "#ffc99c" }}
                 id="outlined-name"
                 label="Emial address"
                 value={username}
@@ -79,11 +100,14 @@ const Login = () => {
                 }}
               />
             </Box>
-            <Box sx={{
-              display: 'flex', justifyContent: 'center',
-            }}>
+            <Box
+              sx={{
+                display: "flex",
+                justifyContent: "center",
+              }}
+            >
               <TextField
-                sx={{ width: '400px', background: '#ffc99c' }}
+                sx={{ width: "400px", background: "#ffc99c" }}
                 id="outlined-password-input"
                 label="Password"
                 type="password"
@@ -101,26 +125,46 @@ const Login = () => {
                 }}
               />
             </Box>
-            <Box sx={{ display: 'flex', justifyContent: 'end', }}>
-              <Typography onClick={() => navigate('/forget')} sx={{ textDecoration: 'underline', cursor: 'pointer' }} variant="body" color="#787878">
+            <Box sx={{ display: "flex", justifyContent: "end" }}>
+              <Typography
+                onClick={() => navigate("/forget")}
+                sx={{ textDecoration: "underline", cursor: "pointer" }}
+                variant="body"
+                color="#787878"
+              >
                 Forget password
               </Typography>
             </Box>
-            <Button onClick={() => handleClick()} sx={{ marginTop: '30px', background: '#ffa65c', color: 'white' }} variant="outlined" color="warning">
+            <Button
+              onClick={() => handleClick()}
+              sx={{ marginTop: "30px", background: "#ffa65c", color: "white" }}
+              variant="outlined"
+              color="warning"
+            >
               {"Log in"}
             </Button>
           </Box>
         </form>
 
-        <Box sx={{ marginTop: '60px', marginBottom: '20px' }}>
+        <Box sx={{ marginTop: "60px", marginBottom: "20px" }}>
           <Typography variant="body" color="#787878">
             --------------OR--------------
           </Typography>
         </Box>
-        <Button onClick={() => navigate('/signin')}  sx={{ display: 'flex', justifyContent: 'center', background: '#ffc99c', color: '#787878' }}>Sign up</Button>
+        <Button
+          onClick={() => navigate("/signin")}
+          sx={{
+            display: "flex",
+            justifyContent: "center",
+            background: "#ffc99c",
+            color: "#787878",
+          }}
+        >
+          Sign up
+        </Button>
       </Box>
     </PageWrapper>
   );
-}
+};
 
 export default Login;
