@@ -8,6 +8,7 @@ import PageWrapper from "../../components/pagewrapper";
 import NavBarWrapper from "../../components/navbarwrapper";
 import Navpagewrapper from "../../components/navpagewrapper";
 import ItemCard from "../../components/itemcard";
+import CardWithDelete from "../../components/cardwithDelete";
 import { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import SettingsOutlinedIcon from "@mui/icons-material/SettingsOutlined";
@@ -19,6 +20,7 @@ import axios from 'axios';
 import React, { useRef } from 'react';
 import toast from 'react-hot-toast';
 import {host} from '../host';
+import DeleteForeverIcon from '@mui/icons-material/DeleteForever';
 
 const Profile = () => {
   const navigate = useNavigate();
@@ -158,6 +160,8 @@ const Profile = () => {
             cover={e.cover}
             description={e.description}
           />
+      
+
         )) : 
         // Default response if user don't have any posted recipes
         <Typography sx={
@@ -182,6 +186,7 @@ const Profile = () => {
             cover={e.cover}
             description={e.description}
           />
+            
         )) : 
         // Default response if user don't have any draft recipes
         <Typography sx={

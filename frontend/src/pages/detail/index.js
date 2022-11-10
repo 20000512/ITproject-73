@@ -18,6 +18,8 @@ import HighlightOffIcon from "@mui/icons-material/HighlightOff";
 import axios from 'axios';
 import {host} from '../host';
 import {Route, Link, Routes, useParams} from 'react-router-dom';
+import DeleteIcon from '@mui/icons-material/Delete';
+import toast from 'react-hot-toast';
 
 
 const style = {
@@ -38,9 +40,15 @@ const Home = () => {
   const params = useParams(); //'634fdf39f48984c37b7a40b0' //String
   console.log(params)
   const [resultArray, setResultArray] = useState([]);
-  const [data, setData] = useState({
-  });
-  
+  const [data, setData] = useState({});
+  const [like, setLike] = useState(false);
+  const [share, setShare] = useState(false);
+  const [comment, setComment] = useState(false);
+  const [copy, setCopy] = useState(false);
+  const [commentText, setCommentText] = useState("");
+  const [finished, setFinished] = useState(false);
+  const [posted, setPosted] = useState([]);
+
   
   
   useEffect(() => {
@@ -53,14 +61,24 @@ const Home = () => {
     } 
     expensesListResp();
   }, []);
+
+  useEffect(() => {
+    const expensesListResp = async () => {
+      await axios.get(host + '/recipes/didlike/'+params.id, {
+      headers: {
+        'authorization': 'Bearer ' + localStorage.getItem("username")
+      }
+    })
+      .then(response => {
+        setLike(response.data)
+
+      })
+    } 
+    expensesListResp();
+  }, []);
   
   
-  const [like, setLike] = useState(false);
-  const [share, setShare] = useState(false);
-  const [comment, setComment] = useState(false);
-  const [copy, setCopy] = useState(false);
-  const [commentText, setCommentText] = useState("");
-  const [finished, setFinished] = useState(false);
+  
 
   const handleCopy = () => {
     navigator.clipboard.writeText(window.location.href);
@@ -70,6 +88,25 @@ const Home = () => {
   const handleComent = () => {
     setFinished(true);
   }
+
+  //delete funtion 
+ 
+  const handleClick = (() => {
+    console.log("inside button");
+    const expensesListResp = async () => {
+      await axios.delete(host + '/recipes/'+params.id,{
+        headers: {
+          'authorization': 'Bearer ' + localStorage.getItem("username") 
+        }
+      })
+        .then(response => setPosted(response.data.data))
+        .catch((error) => {toast.error('You have no access to delete recipe') });
+    }
+    expensesListResp();
+  }, []);
+  
+  
+
   return (
     <PageWrapper>
       <NavBarWrapper>
@@ -93,6 +130,18 @@ const Home = () => {
             />
             <Typography sx={{ ml: "16px" }}>{data.author}</Typography>
           </Box>
+          <Button variant="outlined" startIcon={<DeleteIcon />} onClick={() => {
+                
+                axios.delete(host + '/recipes/' + params.id, {
+                  headers: {
+                    'authorization': 'Bearer ' + localStorage.getItem("username")
+                  }
+                }).then(navigate("/profile"))
+                  .catch((error) => {toast.error('You have no access to delete recipe') });
+                
+                }}>
+            Delete
+          </Button>
           <Box sx={{ mr: "30px" }}>
             <IosShareOutlinedIcon onClick={() => setShare(true)} />
           </Box>
@@ -108,7 +157,7 @@ const Home = () => {
         >
           <Box sx={{ width: "100%" }}>
             <img
-              style={{ width: "100%", height: "100%" }}
+              style={{ width: "100%", height: "500px" }}
               src={data.cover}
               alt=""
             />
