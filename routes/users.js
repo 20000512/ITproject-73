@@ -10,20 +10,6 @@ const jsonParser = bodyParser.json()
 let User = require('../models/user.model');
 let Recipe = require('../models/recipe.model');
 
-//get all users (For convenience only, remove before handover)
-router.route('/').get((req, res) => {
-    User.find()
-        .then(users => res.json(users))
-        .catch(err => res.status(400).json('Error: ' + err));
-});
-
-//delete all users (For convenience only, remove before handover)
-router.route('/').delete((req, res) => {
-    User.remove({})
-        .then(() => res.json('All users removed'))
-        .catch(err => res.status(400).json('Error: ' + err));
-})
-
 //get published recipes, sorted by createdAt descending
 router.route('/post').get(checkAuth, async (req, res) => {
     // Set up pagination parameters

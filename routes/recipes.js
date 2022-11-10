@@ -6,19 +6,6 @@ const checkObjID = require('../middleware/check_obj_id');
 let Recipe = require('../models/recipe.model');
 const bodyParser = require('body-parser')
 const jsonParser = bodyParser.json()
-//get all recipes (For convenience only, remove before handover)
-router.route('/').get((req, res) => {
-    Recipe.find()
-        .then(recipes => res.json(recipes))
-        .catch(err => res.status(400).json('Error: ' + err));
-})
-
-//delete all recipes (For convenience only, remove before handover)
-router.route('/').delete((req, res) => {
-    Recipe.remove({})
-        .then(() => res.status(200).json('All recipes removed'))
-        .catch(err => res.status(500).json(err));
-})
 
 //create a new recipe
 router.route('/add').post(checkAuth, jsonParser,(req, res) => {
