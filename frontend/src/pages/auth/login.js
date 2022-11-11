@@ -30,11 +30,10 @@ const Login = () => {
       email: username,
       password: password,
     };
-    console.log(user);
+
     axios
       .post(host + "/users/login", user)
       .then((res) => {
-        console.log(res.data);
         localStorage.setItem("username", res.data.token);
         navigate("/");
       })

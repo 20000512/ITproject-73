@@ -44,7 +44,20 @@ const Profile = () => {
             authorization: "Bearer " + localStorage.getItem("username"),
           },
         })
-        .then((response) => setPosted(response.data.data));
+        .then((response) => setPosted(response.data.data))
+        .catch((err) => {
+          switch (err.response.status) {
+            case 401:
+              // Authorization error
+              toast.error("You're not logged in! Please login again");
+              localStorage.removeItem("username");
+              navigate("/login");
+              break;
+            default:
+              // Unknown error
+              toast.error("An unknown error occurred");
+          }
+        });
     };
     expensesListResp();
   }, []);
@@ -58,7 +71,20 @@ const Profile = () => {
             authorization: "Bearer " + localStorage.getItem("username"),
           },
         })
-        .then((response) => setDraft(response.data.data));
+        .then((response) => setDraft(response.data.data))
+        .catch((err) => {
+          switch (err.response.status) {
+            case 401:
+              // Authorization error
+              toast.error("You're not logged in! Please login again");
+              localStorage.removeItem("username");
+              navigate("/login");
+              break;
+            default:
+              // Unknown error
+              toast.error("An unknown error occurred");
+          }
+        });
     };
     expensesListRespdraft();
   }, []);
@@ -72,7 +98,20 @@ const Profile = () => {
             authorization: "Bearer " + localStorage.getItem("username"),
           },
         })
-        .then((response) => setLikes(response.data.data));
+        .then((response) => setLikes(response.data.data))
+        .catch((err) => {
+          switch (err.response.status) {
+            case 401:
+              // Authorization error
+              toast.error("You're not logged in! Please login again");
+              localStorage.removeItem("username");
+              navigate("/login");
+              break;
+            default:
+              // Unknown error
+              toast.error("An unknown error occurred");
+          }
+        });
     };
     expensesListResplikes();
   }, []);
@@ -96,6 +135,19 @@ const Profile = () => {
           } else {
             // User do not have profile image, use default
             setAvatar(avatarImg);
+          }
+        })
+        .catch((err) => {
+          switch (err.response.status) {
+            case 401:
+              // Authorization error
+              toast.error("You're not logged in! Please login again");
+              localStorage.removeItem("username");
+              navigate("/login");
+              break;
+            default:
+              // Unknown error
+              toast.error("An unknown error occurred");
           }
         });
     };
@@ -147,7 +199,7 @@ const Profile = () => {
         // Read image selected
         reader.readAsDataURL(input.files[0]);
       } catch (error) {
-        toast.error("Upload error");
+        toast.error("Profile image upload error");
       }
     };
   };

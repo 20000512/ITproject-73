@@ -5,6 +5,7 @@ import Navpagewrapper from "../components/navpagewrapper";
 import { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import { host } from "./host";
+import toast from "react-hot-toast";
 import axios from "axios";
 import ItemCard from "../components/itemcard";
 import ArrowBackIosIcon from "@mui/icons-material/ArrowBackIos";
@@ -22,7 +23,15 @@ const Category = () => {
     {
       id: 2,
       type: "Cuisine",
-      list: ["French", "Chinese", "Japanese", "Italian", "American", "Indian", "German"],
+      list: [
+        "French",
+        "Chinese",
+        "Japanese",
+        "Italian",
+        "American",
+        "Indian",
+        "German",
+      ],
     },
     {
       id: 3,
@@ -42,7 +51,8 @@ const Category = () => {
             setResults(response.data.data);
             // Show search results
             setShow(true);
-          });
+          })
+          .catch(() => toast.error("An unknown error occurred"));
       }
     };
     expensesListResp();

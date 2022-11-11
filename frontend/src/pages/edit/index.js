@@ -125,7 +125,7 @@ const Edit = () => {
         .then(
           // New recipe added to server
           (res) => {
-            console.log(res.data);
+            toast.success("Recipe created");
             // Navigate to home page
             navigate("/");
           }
@@ -133,7 +133,17 @@ const Edit = () => {
         .catch(
           // Error occured when adding new recipe to server
           (err) => {
-            console.error(err);
+            switch (err.response.status) {
+              case 401:
+                // Authorization error
+                toast.error("You're not logged in! Please login again");
+                localStorage.removeItem("username");
+                navigate("/login");
+                break;
+              default:
+                // Unknown error
+                toast.error("An unknown error occurred");
+            }
           }
         );
     }
@@ -149,7 +159,7 @@ const Edit = () => {
         .then(
           // Recipe updated to server
           (res) => {
-            console.log(res.data);
+            toast.success("Recipe updated");
             // Navigate to home page
             navigate("/");
           }
@@ -157,7 +167,17 @@ const Edit = () => {
         .catch(
           // Error occured when updating recipe to server
           (err) => {
-            console.error(err);
+            switch (err.response.status) {
+              case 401:
+                // Authorization error
+                toast.error("You're not logged in! Please login again");
+                localStorage.removeItem("username");
+                navigate("/login");
+                break;
+              default:
+                // Unknown error
+                toast.error("An unknown error occurred");
+            }
           }
         );
     }
@@ -188,6 +208,8 @@ const Edit = () => {
       content: content,
       state: "published",
     };
+
+    console.log(content);
 
     // Save published recipe to server
     saveRecipe(recipe);

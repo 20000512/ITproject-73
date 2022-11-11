@@ -7,48 +7,12 @@ import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import ArrowBackIosIcon from "@mui/icons-material/ArrowBackIos";
 import ArrowForwardIosOutlinedIcon from "@mui/icons-material/ArrowForwardIosOutlined";
+import toast from "react-hot-toast";
 import axios from "axios";
 import { host } from "../host";
 const Setting = () => {
   const navigate = useNavigate();
 
-  const [data, setData] = useState([
-    {
-      id: 1,
-      cover: oneImg,
-      title: "Food Title Food Title Food Title",
-      description:
-        "Food description Food description Food description Food description Food description Food description Food description Food description Food description Food description Food description Food description",
-    },
-    {
-      id: 2,
-      cover: oneImg,
-      title: "Food Title Food Title Food Title",
-      description:
-        "Food description Food description Food description Food description Food description Food description Food description Food description Food description Food description Food description Food description",
-    },
-    {
-      id: 3,
-      cover: oneImg,
-      title: "Food Title Food Title Food Title",
-      description:
-        "Food description Food description Food description Food description Food description Food description Food description Food description Food description Food description Food description Food description",
-    },
-  ]);
-
-  const [list, setList] = useState([]);
-  const [show, setShow] = useState(false);
-  const [keywords, setKeywords] = useState("");
-
-  const handleSearch = () => {
-    setList(Array.from(new Set([keywords, ...list])));
-    setShow(true);
-  };
-
-  const handleResearch = (e) => {
-    setKeywords(e);
-    handleSearch();
-  };
   return (
     <PageWrapper>
       <NavBarWrapper>
@@ -125,17 +89,36 @@ const Setting = () => {
           </Box>
           <Box
             onClick={() => {
-              axios.put(
-                host + "/users/delete",
-                {},
-                {
-                  headers: {
-                    authorization: "Bearer " + localStorage.getItem("username"), //the token is a variable which holds the token
-                  },
-                }
-              );
-              localStorage.removeItem("username");
-              navigate("/login");
+              axios
+                .put(
+                  host + "/users/delete",
+                  {},
+                  {
+                    headers: {
+                      authorization:
+                        "Bearer " + localStorage.getItem("username"), //the token is a variable which holds the token
+                    },
+                  }
+                )
+                .then((res) => {
+                  // Account deleted
+                  toast.success("Account deleted");
+                  localStorage.removeItem("username");
+                  navigate("/login");
+                })
+                .catch((err) => {
+                  switch (err.response.status) {
+                    case 401:
+                      // Authorization error
+                      toast.error("You're not logged in! Please login again");
+                      localStorage.removeItem("username");
+                      navigate("/login");
+                      break;
+                    default:
+                      // Unknown error
+                      toast.error("An unknown error occurred");
+                  }
+                });
             }}
             sx={{
               height: "56px",

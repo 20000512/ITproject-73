@@ -37,7 +37,7 @@ router.route("/post").get(checkAuth, async (req, res) => {
     // Get published recipes sorted by createdAt descending
     const query = await Recipe.find(filter)
       .sort({ createdAt: -1 })
-      .select(fields)
+      .select(fields);
     //   .skip((page - 1) * limit)
     //   .limit(limit * 1);
 
@@ -84,7 +84,7 @@ router.route("/draft").get(checkAuth, async (req, res) => {
     // Get draft recipes sorted by createdAt descending
     const query = await Recipe.find(filter)
       .sort({ createdAt: -1 })
-      .select(fields)
+      .select(fields);
     //   .skip((page - 1) * limit)
     //   .limit(limit * 1);
 
@@ -131,7 +131,7 @@ router.route("/like").get(checkAuth, async (req, res) => {
     // Get liked recipes sorted by createdAt descending
     const query = await Recipe.find(filter)
       .sort({ createdAt: -1 })
-      .select(fields)
+      .select(fields);
     //   .skip((page - 1) * limit)
     //   .limit(limit * 1);
 

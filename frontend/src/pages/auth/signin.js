@@ -36,11 +36,21 @@ const Signin = () => {
     };
     axios
       .post(host + "/users/signup", user)
-      .then((res) => console.log(res.data))
-      .catch((error) => {
-        console.error(error);
+      .then((res) => {
+        toast.success("Signup successful");
+        navigate("/login");
+      })
+      .catch((err) => {
+        switch (err.response.status) {
+          case 400:
+            // User already exists
+            toast.error("User already exists");
+            break;
+          default:
+            // Unknown error
+            toast.error("An unknown error occurred");
+        }
       });
-    navigate("/login");
   };
   return (
     <PageWrapper>

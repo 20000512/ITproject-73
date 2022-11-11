@@ -44,8 +44,6 @@ const style = {
 const Home = () => {
   const navigate = useNavigate();
   const params = useParams(); //'634fdf39f48984c37b7a40b0' //String
-  console.log(params);
-  const [resultArray, setResultArray] = useState([]);
   const [data, setData] = useState({});
   const [like, setLike] = useState(false);
   const [share, setShare] = useState(false);
@@ -53,28 +51,64 @@ const Home = () => {
   const [copy, setCopy] = useState(false);
   const [commentText, setCommentText] = useState("");
   const [finished, setFinished] = useState(false);
-  const [posted, setPosted] = useState([]);
 
+  // Get recipe content
   useEffect(() => {
     const expensesListResp = async () => {
-      await axios.get(host + "/recipes/" + params.id).then((response) => {
-        setData(response.data.data);
-      });
+      await axios
+        .get(host + "/recipes/" + params.id)
+        .then((response) => {
+          setData(response.data.data);
+        })
+        .catch((err) => {
+          switch (err.response.status) {
+            case 404:
+              // Recipe do not exist
+              toast.error("Recipe do not exist");
+              navigate("/");
+              break;
+            default:
+              // Unknown error
+              toast.error("An unknown error occurred");
+          }
+        });
     };
     expensesListResp();
   }, []);
 
+  // Get if user liked the recipe
   useEffect(() => {
     const expensesListResp = async () => {
-      await axios
-        .get(host + "/recipes/didlike/" + params.id, {
-          headers: {
-            authorization: "Bearer " + localStorage.getItem("username"),
-          },
-        })
-        .then((response) => {
-          setLike(response.data);
-        });
+      if (localStorage.getItem("username")) {
+        // User have a token, check if user liked this recipe
+        await axios
+          .get(host + "/recipes/didlike/" + params.id, {
+            headers: {
+              authorization: "Bearer " + localStorage.getItem("username"),
+            },
+          })
+          .then((response) => {
+            setLike(response.data);
+          })
+          .catch((err) => {
+            switch (err.response.status) {
+              case 401:
+                // Authorization error
+                toast.error("You're not logged in! Please login again");
+                localStorage.removeItem("username");
+                navigate("/login");
+                break;
+              case 404:
+                // Recipe do not exist
+                toast.error("Recipe do not exist");
+                navigate("/");
+                break;
+              default:
+                // Unknown error
+                toast.error("An unknown error occurred");
+            }
+          });
+      }
     };
     expensesListResp();
   }, []);
@@ -88,26 +122,42 @@ const Home = () => {
     setFinished(true);
   };
 
-  //delete funtion
-
-  const handleClick =
-    (() => {
-      console.log("inside button");
-      const expensesListResp = async () => {
-        await axios
-          .delete(host + "/recipes/" + params.id, {
-            headers: {
-              authorization: "Bearer " + localStorage.getItem("username"),
-            },
-          })
-          .then((response) => setPosted(response.data.data))
-          .catch((error) => {
-            toast.error("You have no access to delete recipe");
-          });
-      };
-      expensesListResp();
-    },
-    []);
+  //Handler: Delete recipe
+  const handleDelete = () => {
+    axios
+      .delete(host + "/recipes/" + params.id, {
+        headers: {
+          authorization: "Bearer " + localStorage.getItem("username"),
+        },
+      })
+      .then((response) => {
+        // Recipe deleted
+        toast.success("Recipe deleted");
+        navigate("/profile");
+      })
+      .catch((err) => {
+        switch (err.response.status) {
+          case 401:
+            // Authorization error
+            toast.error("You're not logged in! Please login again");
+            localStorage.removeItem("username");
+            navigate("/login");
+            break;
+          case 403:
+            // User not authorized to delete the recipe
+            toast.error("You have no access to delete this recipe");
+            break;
+          case 404:
+            // Recipe do not exist
+            toast.error("Recipe do not exist");
+            navigate("/");
+            break;
+          default:
+            // Unknown error
+            toast.error("An unknown error occurred");
+        }
+      });
+  };
 
   return (
     <PageWrapper>
@@ -127,26 +177,20 @@ const Home = () => {
               onClick={() => navigate(-1)}
             />
             <img
-              style={{ width: "40px", height: "40px", borderRadius: "50%" }}
-              src={data.avatar}
+              style={{
+                width: "40px",
+                height: "40px",
+                borderRadius: "50%",
+                objectFit: "cover",
+              }}
+              src={data.userId?.profilePicture}
             />
-            <Typography sx={{ ml: "16px" }}>{data.author}</Typography>
+            <Typography sx={{ ml: "16px" }}>{data.userId?.username}</Typography>
           </Box>
           <Button
             variant="outlined"
             startIcon={<DeleteIcon />}
-            onClick={() => {
-              axios
-                .delete(host + "/recipes/" + params.id, {
-                  headers: {
-                    authorization: "Bearer " + localStorage.getItem("username"),
-                  },
-                })
-                .then(navigate("/profile"))
-                .catch((error) => {
-                  toast.error("You have no access to delete recipe");
-                });
-            }}
+            onClick={handleDelete}
           >
             Delete
           </Button>
@@ -175,9 +219,12 @@ const Home = () => {
               {data.title}
             </Typography>
             <Typography
-              sx={{ mt: "30px" }}
-              dangerouslySetInnerHTML={{ __html: data.content }}
-            ></Typography>
+              sx={{ mt: "30px", whiteSpace: "pre-line" }}
+              // Uncomment the line below if a proper html editor is used for editing
+              // dangerouslySetInnerHTML={{ __html: data.content }}
+            >
+              {data.content}
+            </Typography>
             <Box>
               <Typography gutterBottom variant="h4" component="div">
                 Comments
@@ -204,9 +251,36 @@ const Home = () => {
                       },
                     }
                   )
-                  .then(console.log("successful"));
-
-                setLike(!like);
+                  .then((res) => {
+                    if (like) {
+                      // Since the user originally liked the recipe
+                      // pressing the button means unliking the recipe
+                      toast.success("Recipe unliked");
+                    } else {
+                      // Since the user originally did not like the recipe
+                      // pressing the button means liking the recipe
+                      toast.success("Recipe liked");
+                    }
+                    setLike(!like);
+                  })
+                  .catch((err) => {
+                    switch (err.response.status) {
+                      case 401:
+                        // Authorization error
+                        toast.error("You're not logged in! Please login again");
+                        localStorage.removeItem("username");
+                        navigate("/login");
+                        break;
+                      case 404:
+                        // Recipe do not exist
+                        toast.error("Recipe do not exist");
+                        navigate("/");
+                        break;
+                      default:
+                        // Unknown error
+                        toast.error("An unknown error occurred");
+                    }
+                  });
               }}
               label="Home"
               icon={

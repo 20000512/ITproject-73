@@ -60,7 +60,8 @@ const Search = () => {
             setList((l) => Array.from(new Set([keywords, ...l])));
             // Show search results
             setShow(true);
-          });
+          })
+          .catch(() => toast.error("An unknown error occurred"));
       }
     };
     expensesListResp();

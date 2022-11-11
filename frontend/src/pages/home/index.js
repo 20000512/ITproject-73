@@ -10,6 +10,7 @@ import PageWrapper from "../../components/pagewrapper";
 import NavBarWrapper from "../../components/navbarwrapper";
 import Navpagewrapper from "../../components/navpagewrapper";
 import ItemCard from "../../components/itemcard";
+import toast from "react-hot-toast";
 import axios from "axios";
 import { host } from "../host";
 import { useNavigate } from "react-router-dom";
@@ -18,17 +19,17 @@ import { useState, useEffect } from "react";
 const Home = () => {
   const navigate = useNavigate();
   const [resultArray, setResultArray] = useState([]);
+
   useEffect(() => {
     const expensesListResp = async () => {
       await axios
         .get(host + "/recipes/hot")
-        .then((response) => setResultArray(response.data));
+        .then((response) => setResultArray(response.data))
+        .catch(() => toast.error("An unknown error occurred"));
     };
     expensesListResp();
   }, []);
-  console.log(resultArray);
   const arrayLength = resultArray.data?.length;
-  console.log(arrayLength); //2
 
   var postData = [];
   for (var i = 0; i < arrayLength; i++) {

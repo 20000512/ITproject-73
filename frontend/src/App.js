@@ -23,7 +23,6 @@ function App() {
 
   useEffect(() => {
     ref.current.ownerDocument.body.scrollTop = 0;
-    console.log(value);
   }, [value]);
 
   useEffect(() => {
